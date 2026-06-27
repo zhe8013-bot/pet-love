@@ -1,0 +1,12 @@
+node_modules/
+dist/
+server-dist/
+coverage/
+data/
+.worktrees/
+.superpowers/
+*.log
+.env
+.env.*
+!.env.example
+
