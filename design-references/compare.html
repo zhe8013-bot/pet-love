@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PetPlanet Design QA Comparison</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 24px; color: #2e223d; background: #ebe5ee; font-family: system-ui, sans-serif; }
+      h1 { margin: 0 0 18px; font-size: 24px; }
+      main { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      figure { min-width: 0; margin: 0; padding: 12px; border-radius: 14px; background: white; }
+      figcaption { margin-bottom: 10px; font-weight: 750; }
+      img { width: 100%; max-width: 100%; height: 760px; display: block; object-fit: cover; object-position: top; border: 1px solid #ddd4df; }
+    </style>
+  </head>
+  <body>
+    <h1>PetPlanet 首页视觉对照 · 顶部与首屏内容区</h1>
+    <main>
+      <figure>
+        <figcaption>Stitch 视觉目标</figcaption>
+        <img src="./stitch/home.png" alt="Stitch reference" />
+      </figure>
+      <figure>
+        <figcaption>React 实现 · 1440×1024</figcaption>
+        <img src="../qa-home-desktop.png" alt="React implementation" />
+      </figure>
+    </main>
+  </body>
+</html>

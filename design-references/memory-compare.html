@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PetPlanet Memory Design QA Comparison</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 24px; color: #f9f4fa; background: #1c1328; font-family: system-ui, sans-serif; }
+      h1 { margin: 0 0 18px; font-size: 24px; }
+      main { display: grid; grid-template-columns: .72fr 1.28fr; gap: 18px; align-items: start; }
+      figure { min-width: 0; margin: 0; padding: 12px; border: 1px solid #513a63; border-radius: 14px; background: #291b38; }
+      figcaption { margin-bottom: 10px; font-weight: 750; }
+      img { width: 100%; max-width: 100%; height: 720px; display: block; object-fit: cover; object-position: top; border: 1px solid #5b4768; }
+    </style>
+  </head>
+  <body>
+    <h1>PetPlanet 记忆星河视觉对照 · 暮色氛围与照片层次</h1>
+    <main>
+      <figure>
+        <figcaption>Stitch 暮色着色器目标</figcaption>
+        <img src="./stitch/memory-shader.png" alt="Stitch shader reference" />
+      </figure>
+      <figure>
+        <figcaption>React Three Fiber 实现 · 1440×1024</figcaption>
+        <img src="../qa-memory-desktop-final.png" alt="React Three Fiber implementation" />
+      </figure>
+    </main>
+  </body>
+</html>

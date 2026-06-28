@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PetPlanet - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error": "#ba1a1a",
+                      "secondary-fixed": "#e8deff",
+                      "inverse-surface": "#352d3b",
+                      "tertiary-container": "#caa04b",
+                      "surface": "#fff7fe",
+                      "primary-container": "#e88f78",
+                      "subtle-text": "#756B7D",
+                      "deep-plum": "#2E223D",
+                      "surface-container-highest": "#ebdef1",
+                      "surface-tint": "#924a37",
+                      "on-surface": "#201926",
+                      "on-secondary": "#ffffff",
+                      "border-light": "#E8E2DA",
+                      "on-error": "#ffffff",
+                      "on-secondary-container": "#4e3d86",
+                      "on-secondary-fixed": "#1f0756",
+                      "inverse-primary": "#ffb4a1",
+                      "surface-dim": "#e3d6e8",
+                      "error-container": "#ffdad6",
+                      "on-background": "#201926",
+                      "on-primary-fixed": "#3b0900",
+                      "surface-bright": "#fff7fe",
+                      "surface-container": "#f7e9fc",
+                      "on-tertiary-fixed-variant": "#5d4200",
+                      "tertiary-fixed": "#ffdea4",
+                      "on-primary-fixed-variant": "#753322",
+                      "secondary-container": "#c0adff",
+                      "on-tertiary-fixed": "#261900",
+                      "surface-container-lowest": "#ffffff",
+                      "background": "#FFF9F3",
+                      "on-surface-variant": "#54433f",
+                      "secondary-fixed-dim": "#cdbdff",
+                      "on-primary-container": "#672818",
+                      "outline-variant": "#d9c1bb",
+                      "on-tertiary": "#ffffff",
+                      "outline": "#87736e",
+                      "tertiary": "#7a5904",
+                      "on-error-container": "#93000a",
+                      "surface-container-high": "#f1e4f7",
+                      "surface-container-low": "#fcf0ff",
+                      "on-tertiary-container": "#4f3800",
+                      "surface-variant": "#ebdef1",
+                      "primary": "#924a37",
+                      "on-secondary-fixed-variant": "#4c3a84",
+                      "primary-fixed": "#ffdbd2",
+                      "secondary": "#64529d",
+                      "tertiary-fixed-dim": "#edc068",
+                      "inverse-on-surface": "#faecff",
+                      "primary-fixed-dim": "#ffb4a1",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "margin-desktop": "40px",
+                      "element-gap": "16px",
+                      "margin-mobile": "20px",
+                      "section-gap": "64px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "beVietnamPro", "sans-serif"
+                      ],
+                      "label-sm": [
+                              "beVietnamPro", "sans-serif"
+                      ],
+                      "body-md": [
+                              "beVietnamPro", "sans-serif"
+                      ],
+                      "body-lg": [
+                              "beVietnamPro", "sans-serif"
+                      ],
+                      "headline-md": [
+                              "beVietnamPro", "sans-serif"
+                      ],
+                      "display-lg": [
+                              "beVietnamPro", "sans-serif"
+                      ],
+                      "headline-lg": [
+                              "beVietnamPro", "sans-serif"
+                      ],
+                      "headline-lg-mobile": [
+                              "beVietnamPro", "sans-serif"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              },
+              boxShadow: {
+                  'soft': '0 4px 20px -4px rgba(46, 34, 61, 0.05)',
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        body {
+            background-color: #FFF9F3; /* Cream base */
+            color: #201926; /* on-background */
+        }
+        .card-radius {
+            border-radius: 22px;
+        }
+        .btn-radius {
+            border-radius: 14px;
+        }
+        .input-radius {
+            border-radius: 12px;
+        }
+        .text-coral { color: #e88f78; }
+        .bg-coral { background-color: #e88f78; }
+        .border-lavender { border-color: #c0adff; }
+        .text-lavender { color: #c0adff; }
+        .bg-lavender-subtle { background-color: rgba(192, 173, 255, 0.5); }
+    </style>
+</head>
+<body class="font-body-md antialiased min-h-screen flex">
+<!-- SideNavBar (Shared Component Blueprint) -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-surface border-r border-border-light flex flex-col py-gutter px-4 z-50">
+<!-- Brand Logo Area -->
+<div class="mb-10 px-2 flex flex-col gap-2">
+<img alt="PetPlanet Logo" class="h-10 object-contain self-start" src="data:image/png;base64,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"/>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">PetPlanet</h1>
+<p class="font-label-sm text-label-sm text-subtle-text">Lantern Garden</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-2 flex-grow">
+<!-- Active Tab: Home -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-primary-container/10 transition-all opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-subtle-text hover:bg-secondary-fixed/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span class="font-label-md text-label-md">Health</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-subtle-text hover:bg-secondary-fixed/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-label-md text-label-md">Records</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-subtle-text hover:bg-secondary-fixed/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-md text-label-md">Memory Galaxy</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-subtle-text hover:bg-secondary-fixed/30 transition-colors mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+<div class="mt-4">
+<button class="w-full bg-primary-container text-white font-label-md text-label-md py-3 btn-radius flex items-center justify-center gap-2 hover:opacity-90 transition-opacity h-[48px]">
+<span class="material-symbols-outlined">add</span>
+                Add New Pet
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 p-margin-desktop min-h-screen max-w-[1440px] mx-auto w-full">
+<!-- Header -->
+<header class="mb-10 flex justify-between items-end">
+<div>
+<h2 class="font-display-lg text-display-lg text-deep-plum mb-2">今天也一起好好生活</h2>
+<p class="font-body-lg text-body-lg text-subtle-text">Welcome back to your peaceful garden.</p>
+</div>
+<!-- Quick Actions Bar -->
+<div class="flex gap-4">
+<button class="btn-radius bg-surface border border-lavender text-secondary font-label-md text-label-md px-6 h-[48px] shadow-soft hover:bg-secondary-fixed/20 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">medical_information</span>
+                    记录病历
+                </button>
+<button class="btn-radius bg-surface border border-lavender text-secondary font-label-md text-label-md px-6 h-[48px] shadow-soft hover:bg-secondary-fixed/20 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">monitor_weight</span>
+                    记录体重
+                </button>
+<button class="btn-radius bg-coral text-white font-label-md text-label-md px-6 h-[48px] shadow-soft hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+                    添加回忆
+                </button>
+</div>
+</header>
+<!-- Pet Role Cards Row (Horizontal Scroll/Grid) -->
+<section class="mb-12">
+<div class="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar">
+<!-- Pet Card 1: 豆包 (Active) -->
+<div class="card-radius bg-white p-4 min-w-[320px] shadow-soft border-2 border-primary-container relative snap-start cursor-pointer hover:shadow-lg transition-shadow">
+<div class="absolute top-4 right-4 w-3 h-3 rounded-full bg-coral"></div>
+<div class="flex items-center gap-4 mb-4">
+<img alt="Golden Retriever" class="w-20 h-20 rounded-full object-cover border border-border-light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOW-VtLcaFReMr9aad6siW4KPLGoQd5JcoDPdDHnAsjRq0VpCWfK0kK2NAufEPOBFQjoOkuZXr3ix31Qx9oOqy9erj87ZTR3VBP0nzfbj7huvq0_aL26N9F4bIl8VUbnEF1SKJ4Sf9jDAOLCVj1Et3ZQ7wDhCyinnqr05ZY7GkxpbuPqd7qkZo-_cOrwetin00TuLDhNNU_KsjmXnp_KZrOC-guiQoqwPkkHh5m3-sdi2W45reZ7ckmSgjvEiKpy3X1bWeTTjLaVk"/>
+<div>
+<h3 class="font-headline-md text-headline-md text-deep-plum">豆包</h3>
+<p class="font-label-sm text-label-sm text-subtle-text">Golden Retriever · 4岁 · 32kg</p>
+</div>
+</div>
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 rounded-full bg-lavender-subtle text-on-secondary-container font-label-sm text-label-sm">活泼</span>
+<span class="px-3 py-1 rounded-full border border-border-light text-subtle-text font-label-sm text-label-sm">健康</span>
+</div>
+<div class="bg-surface-container rounded-lg p-3 flex justify-between items-center">
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-1">下次提醒</p>
+<p class="font-body-md text-body-md text-on-surface font-medium">驱虫</p>
+</div>
+<span class="font-label-md text-label-md text-coral bg-white px-2 py-1 rounded-md">3天后</span>
+</div>
+</div>
+<!-- Pet Card 2: 米粒 -->
+<div class="card-radius bg-white p-4 min-w-[320px] shadow-soft border border-transparent hover:border-border-light snap-start cursor-pointer transition-all opacity-70 hover:opacity-100">
+<div class="flex items-center gap-4 mb-4">
+<img alt="Orange Cat" class="w-20 h-20 rounded-full object-cover border border-border-light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLfKhH8GdIxvDtoYvFGwfwnAWj4ksE5kZUbOs38bDnBMn2b0CO1U1OGt3s0iVGRp2sVNS3U9aTAyaAaHq-eJpgxJi6KUvY1Z4Wh7SVrfOg0Aw_4-UUsY1lmTtXwM5blK5JQbn15Hk6ib5m5sJ86i7dJy4coRsW_zW-8a9x0zv4d_av65puvIQflaC1c3k9BlqLhCUBskKuWbaPFo1Oaqh9LSSWzOiXdllv_PYGvC7wPnSHBke-bwDn5rq3jbJOC_i14wVydNcTNpM"/>
+<div>
+<h3 class="font-headline-md text-headline-md text-deep-plum">米粒</h3>
+<p class="font-label-sm text-label-sm text-subtle-text">Orange Cat · 2岁 · 4.5kg</p>
+</div>
+</div>
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 rounded-full bg-lavender-subtle text-on-secondary-container font-label-sm text-label-sm">贪睡</span>
+</div>
+<div class="bg-surface-container rounded-lg p-3 flex justify-between items-center">
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-1">下次提醒</p>
+<p class="font-body-md text-body-md text-on-surface font-medium">疫苗</p>
+</div>
+<span class="font-label-md text-label-md text-secondary bg-white px-2 py-1 rounded-md">本月20日</span>
+</div>
+</div>
+<!-- Pet Card 3: 糖糖 -->
+<div class="card-radius bg-white p-4 min-w-[320px] shadow-soft border border-transparent hover:border-border-light snap-start cursor-pointer transition-all opacity-70 hover:opacity-100">
+<div class="flex items-center gap-4 mb-4">
+<img alt="Border Collie" class="w-20 h-20 rounded-full object-cover border border-border-light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm9tKKoiBryqG7Ofm3aXHeoSycvOc62Pa2Ry-drJPZuvpK6dumAnO1PBRzIlXIDnQS46QzzMK16lrbDYKPBq4Ms-pGJrmiSXdGPwp0smT6l0erajOU9igkXK6KXopQOH2FEh7eTIaVp8kM00K8C2RrFTfW7-VaZ9pkfr0NG8t_TJs0_RuoRrUlClH5lghXpUPzcPHtkTLxQRUB0Ti_NxIm5PBmAK_eaOgTIrSUh7ltiDMvYMWt4woALppX2m8Cdx-RQ4nkbjaH0gQ"/>
+<div>
+<h3 class="font-headline-md text-headline-md text-deep-plum">糖糖</h3>
+<p class="font-label-sm text-label-sm text-subtle-text">Border Collie · 3岁 · 21kg</p>
+</div>
+</div>
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 rounded-full bg-lavender-subtle text-on-secondary-container font-label-sm text-label-sm">聪明</span>
+</div>
+<div class="bg-surface-container rounded-lg p-3 flex justify-between items-center">
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-1">下次提醒</p>
+<p class="font-body-md text-body-md text-on-surface font-medium">梳毛</p>
+</div>
+<span class="font-label-md text-label-md text-secondary bg-white px-2 py-1 rounded-md">明天</span>
+</div>
+</div>
+<!-- Add Pet Card -->
+<div class="card-radius bg-surface-container-lowest border border-dashed border-outline-variant p-4 min-w-[200px] flex flex-col items-center justify-center snap-start cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="w-16 h-16 rounded-full bg-secondary-fixed flex items-center justify-center mb-4 text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</div>
+<p class="font-label-md text-label-md text-subtle-text">添加新成员</p>
+</div>
+</div>
+</section>
+<!-- Selected Pet Detail Section & Activity (Bento Grid) -->
+<section class="grid grid-cols-12 gap-6">
+<!-- Details Area (Spans 8 cols) -->
+<div class="col-span-8 flex flex-col gap-6">
+<!-- Top Row in Details: Health & Spending -->
+<div class="grid grid-cols-2 gap-6">
+<!-- Health Note -->
+<div class="card-radius bg-white p-6 shadow-soft flex flex-col justify-between">
+<div class="flex items-center gap-2 mb-4 text-secondary">
+<span class="material-symbols-outlined">favorite</span>
+<h4 class="font-headline-md text-headline-md">健康备忘</h4>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed flex-grow">
+                            "上周检查恢复良好，继续保持运动。"
+                        </p>
+<p class="font-label-sm text-label-sm text-subtle-text mt-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit_calendar</span> 更新于昨天
+                        </p>
+</div>
+<!-- Spending -->
+<div class="card-radius bg-white p-6 shadow-soft flex flex-col justify-between">
+<div class="flex items-center gap-2 mb-4 text-tertiary-container">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<h4 class="font-headline-md text-headline-md">本月支出</h4>
+</div>
+<div class="flex-grow flex flex-col justify-center">
+<p class="font-display-lg text-display-lg text-deep-plum">¥450</p>
+<p class="font-body-md text-body-md text-subtle-text mt-1">主粮 + 零食</p>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full mt-4 overflow-hidden">
+<div class="bg-tertiary-container h-full w-1/3"></div>
+</div>
+</div>
+</div>
+<!-- Bottom Row in Details: Weight Trend & Memory -->
+<div class="grid grid-cols-2 gap-6">
+<!-- Weight Trend -->
+<div class="card-radius bg-white p-6 shadow-soft">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined">monitor_weight</span>
+<h4 class="font-headline-md text-headline-md">体重趋势</h4>
+</div>
+<span class="font-headline-lg text-headline-lg text-deep-plum">32<span class="text-body-md text-subtle-text">kg</span></span>
+</div>
+<!-- Simplified Chart Placeholder -->
+<div class="h-32 w-full relative flex items-end justify-between px-2">
+<!-- Grid lines -->
+<div class="absolute inset-0 flex flex-col justify-between opacity-10">
+<div class="w-full h-[1px] bg-deep-plum"></div>
+<div class="w-full h-[1px] bg-deep-plum"></div>
+<div class="w-full h-[1px] bg-deep-plum"></div>
+</div>
+<!-- SVG Line -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,80 Q25,75 50,82 T100,78" fill="none" stroke="#e88f78" stroke-linecap="round" stroke-width="3"></path>
+<circle cx="0" cy="80" fill="#e88f78" r="3"></circle>
+<circle cx="50" cy="82" fill="#e88f78" r="3"></circle>
+<circle cx="100" cy="78" fill="#924a37" r="4"></circle>
+</svg>
+<div class="w-full flex justify-between text-label-sm text-subtle-text mt-2 absolute -bottom-6">
+<span>1月</span>
+<span>2月</span>
+<span>本月</span>
+</div>
+</div>
+</div>
+<!-- Latest Memory -->
+<div class="card-radius bg-white shadow-soft overflow-hidden relative group cursor-pointer">
+<img alt="Latest Memory" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGp-pyKRmvxrlMJNh3SKeLiSrZfp0W_8GF96m21AwRkazhWX3xBLhrmiFH9Kmqy09r3WCRruVw2G1Q3MvL2tvOA-jthriwU9zwGVRBqBLD9UxZzGCzRO8i1EODvFzRxUeo0y-ObeFc-XwqobIMRTKcVaPgfyvXW7vqMkDCGNLxnjTio3pHzlywNhqunah3qMW3-UC748xBFFuhI1xRUYIHs-VMwnffpZTmp2HVrNKf9Euqud3KDWQA3LmYYuVPh3M5wLGXYL9h4q0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-deep-plum/80 via-deep-plum/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<div class="flex items-center gap-2 text-white/80 mb-2 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">photo_library</span>
+                                最新回忆
+                            </div>
+<p class="font-headline-md text-headline-md text-white">午后阳光下的午睡</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity List (Spans 4 cols) -->
+<div class="col-span-4 flex flex-col">
+<div class="card-radius bg-white p-6 shadow-soft h-full flex flex-col">
+<h3 class="font-headline-md text-headline-md text-deep-plum mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-subtle-text">history</span>
+                        最近活动
+                    </h3>
+<div class="flex flex-col gap-6 relative flex-grow">
+<!-- Connecting Line -->
+<div class="absolute left-[11px] top-2 bottom-2 w-[2px] bg-border-light z-0"></div>
+<!-- Activity Item 1 -->
+<div class="flex gap-4 relative z-10">
+<div class="w-6 h-6 rounded-full bg-primary-fixed flex items-center justify-center shrink-0 border-2 border-white">
+<span class="material-symbols-outlined text-[14px] text-on-primary-fixed">directions_run</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-1">2小时前</p>
+<p class="font-body-md text-body-md text-on-surface">
+<span class="font-medium text-deep-plum">豆包</span> 完成了 <span class="text-coral font-medium">30分钟</span> 户外运动.
+                                </p>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="flex gap-4 relative z-10">
+<div class="w-6 h-6 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0 border-2 border-white">
+<span class="material-symbols-outlined text-[14px] text-on-secondary-fixed">restaurant</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-1">今天 09:00</p>
+<p class="font-body-md text-body-md text-on-surface">
+                                    给 <span class="font-medium text-deep-plum">米粒</span> 喂食了 冻干零食.
+                                </p>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="flex gap-4 relative z-10">
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0 border-2 border-white">
+<span class="material-symbols-outlined text-[14px] text-on-tertiary-fixed">monitor_weight</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-1">昨天</p>
+<p class="font-body-md text-body-md text-on-surface">
+<span class="font-medium text-deep-plum">糖糖</span> 更新了体重记录 <span class="font-medium">21kg</span>.
+                                </p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 text-center font-label-md text-label-md text-secondary hover:bg-secondary-fixed/20 rounded-lg transition-colors">
+                        查看全部记录
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<style>
+        /* Hide scrollbar for horizontal scroll area but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>
