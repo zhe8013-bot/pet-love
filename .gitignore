@@ -2,7 +2,7 @@ node_modules/
 dist/
 server-dist/
 coverage/
-data/
+/data/
 .worktrees/
 .superpowers/
 *.log
