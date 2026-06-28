@@ -8,8 +8,9 @@ import type {
 } from '../domain/types'
 import type { PetRepository } from './repository'
 
-async function request<T>(url: string, init?: RequestInit): Promise<T> {
+async function request<T>(url: string, init?: RequestInit, notFoundAsUndefined = false): Promise<T> {
   const res = await fetch(url, init)
+  if (res.status === 404 && notFoundAsUndefined) return undefined as T
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
     throw new Error((body as any).message ?? `请求失败 (${res.status})`)
@@ -25,7 +26,7 @@ export function createHttpPetRepository(baseUrl: string): PetRepository {
     },
 
     async getPet(id) {
-      return request<Pet>(`${baseUrl}/pets/${id}`)
+      return request<Pet | undefined>(`${baseUrl}/pets/${id}`, undefined, true)
     },
 
     async addPet(input) {

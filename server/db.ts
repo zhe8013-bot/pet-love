@@ -115,6 +115,14 @@ export function seedIfEmpty() {
     INSERT INTO memories (id, pet_id, occurred_at, mood, note, is_highlight)
     VALUES (@id, @petId, @occurredAt, @mood, @note, @isHighlight)
   `)
+  const insertMedicalAsset = db.prepare(`
+    INSERT INTO medical_record_assets (medical_record_id, url)
+    VALUES (?, ?)
+  `)
+  const insertMemoryAsset = db.prepare(`
+    INSERT INTO memory_assets (memory_id, url)
+    VALUES (?, ?)
+  `)
 
   const pets = [
     { id: 'pet-doubao',      name: '豆包', species: 'dog',  breed: '金毛寻回犬', birthDate: '2022-03-12', ageLabel: '4岁', status: '活泼', avatar: '/assets/dog-avatar.jpg',     reminder: '驱虫', reminderDate: '3天后' },
@@ -127,6 +135,7 @@ export function seedIfEmpty() {
 
     insertMedical.run({ id: 'medical-1', petId: 'pet-doubao', visitDate: '2026-06-18', symptoms: '饭后偶尔干呕，精神状态正常', diagnosis: '轻度消化不良', treatment: '清淡饮食三天，减少零食', medication: '宠物益生菌，每日一次', clinic: '暖爪动物医院', costCents: 26000, followUpDate: '2026-06-25', status: 'follow-up' })
     insertMedical.run({ id: 'medical-2', petId: 'pet-doubao', visitDate: '2026-03-08', symptoms: '年度常规体检', diagnosis: '各项指标正常', treatment: '继续保持每日运动', medication: '', clinic: '暖爪动物医院', costCents: 48000, followUpDate: '', status: 'recovered' })
+    insertMedicalAsset.run('medical-1', '/assets/memory-sunlit-nap.jpg')
 
     insertConsumption.run({ id: 'consumption-1', petId: 'pet-doubao', month: '2026-06', category: '主粮', quantity: 6, unit: 'kg', costCents: 36000 })
     insertConsumption.run({ id: 'consumption-2', petId: 'pet-doubao', month: '2026-06', category: '零食', quantity: 4, unit: '袋', costCents: 9000 })
@@ -146,6 +155,18 @@ export function seedIfEmpty() {
     insertMemory.run({ id: 'memory-6', petId: 'pet-doubao', occurredAt: '2026-01-01', mood: '困困', note: '跨年钟声没能叫醒熟睡的小家伙。', isHighlight: 0 })
     insertMemory.run({ id: 'memory-7', petId: 'pet-doubao', occurredAt: '2026-04-05', mood: '开心', note: '春天的第一场长途散步。', isHighlight: 0 })
     insertMemory.run({ id: 'memory-8', petId: 'pet-doubao', occurredAt: '2026-06-22', mood: '安心', note: '午后阳光下的午睡。', isHighlight: 1 })
+
+    const memoryPhotos = [
+      '/assets/dog-avatar.jpg',
+      '/assets/memory-sunlit-nap.jpg',
+      '/assets/dog-avatar.jpg',
+      '/assets/memory-sunlit-nap.jpg',
+      '/assets/dog-avatar.jpg',
+      '/assets/memory-sunlit-nap.jpg',
+      '/assets/dog-avatar.jpg',
+      '/assets/memory-sunlit-nap.jpg',
+    ]
+    memoryPhotos.forEach((url, index) => insertMemoryAsset.run(`memory-${index + 1}`, url))
   })
 
   seedAll()

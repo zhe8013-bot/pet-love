@@ -16,7 +16,7 @@
 - Modify: `server/db.ts`
 - Create: `server/db.test.ts`
 
-- [ ] **Step 1: Write the failing seed test**
+- [x] **Step 1: Write the failing seed test**
 
 Run the database module in a child Node process whose working directory is a temporary folder. This makes the existing module-level SQLite database resolve under the temporary folder without changing production APIs. Call `seedIfEmpty()`, then assert `medical-1` returns `['/assets/memory-sunlit-nap.jpg']` and all eight memories return the same alternating photo URLs defined in `src/data/seed.ts`.
 
@@ -50,13 +50,13 @@ expect(result.memoryPhotos).toEqual([
 ])
 ```
 
-- [ ] **Step 2: Run the seed test and verify RED**
+- [x] **Step 2: Run the seed test and verify RED**
 
 Run: `npx vitest run server/db.test.ts`
 
 Expected: FAIL because the returned photo arrays are empty.
 
-- [ ] **Step 3: Make database initialization injectable and seed associations**
+- [x] **Step 3: Seed associations inside the existing transaction**
 
 Inside the existing seed transaction, prepare and execute:
 
@@ -85,7 +85,7 @@ memoryPhotos.forEach((url, index) => insertMemoryAsset.run(`memory-${index + 1}`
 
 Do not insert these static URLs into `assets`.
 
-- [ ] **Step 4: Run the seed test and verify GREEN**
+- [x] **Step 4: Run the seed test and verify GREEN**
 
 Run: `npx vitest run server/db.test.ts`
 
@@ -97,7 +97,7 @@ Expected: PASS.
 - Modify: `src/data/httpRepository.ts`
 - Create: `src/data/httpRepository.test.ts`
 
-- [ ] **Step 1: Write failing HTTP repository tests**
+- [x] **Step 1: Write failing HTTP repository tests**
 
 Stub `fetch` with real `Response` objects. Verify a 404 resolves to `undefined` and a 500 with `{ message: '数据库暂不可用' }` rejects with that message.
 
@@ -111,13 +111,13 @@ vi.stubGlobal('fetch', vi.fn().mockResolvedValue(
 await expect(repository.getPet('missing')).resolves.toBeUndefined()
 ```
 
-- [ ] **Step 2: Run the HTTP test and verify RED**
+- [x] **Step 2: Run the HTTP test and verify RED**
 
 Run: `npx vitest run src/data/httpRepository.test.ts`
 
 Expected: FAIL because the current shared request helper throws for 404.
 
-- [ ] **Step 3: Add an explicit not-found option**
+- [x] **Step 3: Add an explicit not-found option**
 
 Extend the private request helper with `notFoundAsUndefined = false`. Before generic error handling, return `undefined` only when `res.status === 404 && notFoundAsUndefined`. Call it only from `getPet`:
 
@@ -127,7 +127,7 @@ async getPet(id) {
 }
 ```
 
-- [ ] **Step 4: Run the HTTP test and verify GREEN**
+- [x] **Step 4: Run the HTTP test and verify GREEN**
 
 Run: `npx vitest run src/data/httpRepository.test.ts`
 
@@ -140,7 +140,7 @@ Expected: both tests PASS.
 - Create: `server/assetCleanup.test.ts`
 - Modify: `server/index.ts`
 
-- [ ] **Step 1: Write failing cleanup tests**
+- [x] **Step 1: Write failing cleanup tests**
 
 Run each scenario in a child Node process whose working directory is a temporary folder, so the existing module-level database and `data/uploads` directory are isolated. Use `fs.mkdtempSync` for the outer test workspace and create managed upload files inside it. Cover:
 
@@ -160,13 +160,13 @@ const deleted = deleteRecordWithAssetCleanup({
 expect(deleted).toBe(true)
 ```
 
-- [ ] **Step 2: Run cleanup tests and verify RED**
+- [x] **Step 2: Run cleanup tests and verify RED**
 
 Run: `npx vitest run server/assetCleanup.test.ts`
 
 Expected: FAIL because `server/assetCleanup.ts` does not exist.
 
-- [ ] **Step 3: Implement transactional reference-aware cleanup**
+- [x] **Step 3: Implement transactional reference-aware cleanup**
 
 Create `deleteRecordWithAssetCleanup` with a fixed configuration map for medical and memory tables. It must:
 
@@ -193,7 +193,7 @@ if (!stillReferenced) {
 
 Run the database section in one transaction. After it commits, unlink each validated file. Ignore `ENOENT`; log other errors with `console.warn`. `resolveManagedUploadPath` must use `path.basename`, `path.resolve`, and `path.relative` to reject any path outside `uploadsDir`.
 
-- [ ] **Step 4: Wire both delete endpoints to the service**
+- [x] **Step 4: Wire both delete endpoints to the service**
 
 Replace the duplicate delete logic in `server/index.ts`:
 
@@ -210,7 +210,7 @@ res.status(204).send()
 
 Use `kind: 'memory'` for the memory route.
 
-- [ ] **Step 5: Run cleanup tests and verify GREEN**
+- [x] **Step 5: Run cleanup tests and verify GREEN**
 
 Run: `npx vitest run server/assetCleanup.test.ts`
 
@@ -221,7 +221,7 @@ Expected: all cleanup tests PASS.
 **Files:**
 - Modify: `docs/superpowers/plans/2026-06-28-backend-consistency-fixes.md` (check completed steps)
 
-- [ ] **Step 1: Run all checks**
+- [x] **Step 1: Run all checks**
 
 Run:
 

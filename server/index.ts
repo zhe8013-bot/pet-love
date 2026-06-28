@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid'
 import path from 'node:path'
 import fs from 'node:fs'
 import { db, seedIfEmpty, petRow, medicalRow, consumptionRow, weightRow, memoryRow } from './db'
+import { deleteRecordWithAssetCleanup } from './assetCleanup'
 
 const PORT = 61414
 const UPLOADS_DIR = path.resolve('data/uploads')
@@ -149,9 +150,13 @@ app.post('/api/pets/:petId/medical-records', (req, res) => {
 })
 
 app.delete('/api/medical-records/:recordId', (req, res) => {
-  const existing = db.prepare('SELECT * FROM medical_records WHERE id = ?').get(req.params.recordId)
-  if (!existing) return res.status(404).json({ message: '病历不存在' })
-  db.prepare('DELETE FROM medical_records WHERE id = ?').run(req.params.recordId)
+  const deleted = deleteRecordWithAssetCleanup({
+    database: db,
+    uploadsDir: UPLOADS_DIR,
+    kind: 'medical',
+    recordId: req.params.recordId,
+  })
+  if (!deleted) return res.status(404).json({ message: '病历不存在' })
   res.status(204).send()
 })
 
@@ -312,9 +317,13 @@ app.patch('/api/memories/:memoryId', (req, res) => {
 })
 
 app.delete('/api/memories/:memoryId', (req, res) => {
-  const existing = db.prepare('SELECT * FROM memories WHERE id = ?').get(req.params.memoryId)
-  if (!existing) return res.status(404).json({ message: '回忆不存在' })
-  db.prepare('DELETE FROM memories WHERE id = ?').run(req.params.memoryId)
+  const deleted = deleteRecordWithAssetCleanup({
+    database: db,
+    uploadsDir: UPLOADS_DIR,
+    kind: 'memory',
+    recordId: req.params.memoryId,
+  })
+  if (!deleted) return res.status(404).json({ message: '回忆不存在' })
   res.status(204).send()
 })
 
