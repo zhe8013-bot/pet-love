@@ -1,30 +1,62 @@
-# PetPlanet 设计 QA
+# PetPlanet non-3D product design QA
 
-## 对照范围
+- Source visual truth:
+  - `design-references/stitch-v2/home.png`
+  - `design-references/stitch-v2/pet-profile.png`
+  - `design-references/stitch-v2/health.png`
+  - `design-references/stitch-v2/life.png`
+  - `design-references/stitch-v2/home-mobile.png`
+- Rendered implementation:
+  - `design-qa/home-desktop.png`
+  - `design-qa/pets-desktop.png`
+  - `design-qa/health-desktop.png`
+  - `design-qa/life-desktop.png`
+  - `design-qa/home-mobile-viewport.png`
+  - `design-qa/pets-mobile-viewport.png`
+  - `design-qa/health-mobile-viewport.png`
+  - `design-qa/life-mobile-viewport.png`
+- Viewports: desktop `1440 × 1024`; mobile `390 × 844`
+- State: seeded local repository, current pet “豆包”, default filters and June 2026 records
 
-- 首页视觉源：`design-references/stitch/home.png`
-- 记忆星河氛围源：`design-references/stitch/memory-shader.png`
-- 桌面实现：`qa-home-desktop.png`、`qa-memory-desktop-final.png`
-- 移动实现：`qa-home-mobile-final.png`、`qa-memory-mobile-final.png`
-- 合并对照：`qa-home-comparison.png`、`qa-memory-comparison.png`
+## Full-view comparison evidence
 
-桌面视口为 1440×1024，移动视口为 390×844。页面使用相同的 mock 宠物与记忆数据，浏览器 localStorage 状态保持一致。
+- `design-qa/home-comparison.png`
+- `design-qa/pets-comparison.png`
+- `design-qa/health-comparison.png`
+- `design-qa/life-comparison.png`
+- `design-qa/home-mobile-comparison.png`
 
-## 校准结果
+The implementation preserves the source system’s cream canvas, pale pink navigation surface, coral primary action, lavender supporting states, rounded white content surfaces and compact dark-plum typography. Content density was intentionally adapted to the real PetPlanet information model rather than copying placeholder labels from the references.
 
-- 首页复现了 Stitch 的暖米色画布、珊瑚色操作按钮、宠物角色卡、健康提醒与近期动态层级。
-- 记忆星河使用真实 WebGL shader、照片纹理平面、萤火粒子、景深层次、拖拽探索与鼠标视差；暮色从深梅紫过渡到暖桃色，匹配 Stitch 氛围参考。
-- 记忆页标题与 3D 舞台之间保留安全区，桌面和移动端均未出现标题被照片遮挡的问题。
-- 移动端切换为底部导航并降低粒子数量；控制按钮、照片详情卡和主要表单均落在可操作宽度内。
-- `prefers-reduced-motion` 或无 WebGL 时自动使用静态 2D 成长画廊。
+## Focused comparison evidence
 
-## 已修复问题
+- `design-qa/health-focused-comparison.png`
 
-- P1：3D 照片覆盖页面标题；整体舞台下移并为标题增加深色文字阴影。
-- P1：移动端模式切换挤压；控制区改为三列紧凑布局并保持单行标签。
-- P2：桌面记忆页空间感不足；加入全屏暮色 shader 与分层光照。
-- P2：首页窄屏横向溢出；宠物卡和统计区改为单列，自适应隐藏桌面侧栏。
+The focused health comparison checks the search/status/time controls, timeline alignment, semantic status colors, record hierarchy, cost placement, photo affordance and detail action. Other screens did not require an additional focused crop because their full-resolution implementation captures make typography, imagery and controls readable at the inspected viewport.
 
-## 结论
+## Findings
 
-P0、P1、P2 视觉与交互问题均已解决。Stitch 首页源图为更高分辨率长页，本实现按产品首版收敛为响应式应用信息架构，因此内容密度存在有意差异；颜色、层级、圆角、间距与核心氛围已对齐。
+No actionable P0, P1 or P2 mismatches remain.
+
+- Fonts and typography: the Chinese system-font stack renders consistently and preserves the intended hierarchy; display headings, data values, labels and helper text remain legible without clipping.
+- Spacing and layout rhythm: desktop grids align to a shared content column and mobile layouts collapse without document-level horizontal overflow. Cards, radii, borders and elevation remain consistent across all four routes.
+- Colors and tokens: brand coral, lavender, plum, cream and semantic status colors consistently map to actions, selections, warnings and recovered states with readable contrast.
+- Image quality and asset fidelity: real supplied pet photos are used for avatars and medical-photo previews with stable object-fit crops. No emoji, custom SVG illustrations or CSS placeholder art replaces visible source imagery; interface icons use one Phosphor family.
+- Copy and content: labels are standalone, domain-appropriate Chinese. Consumption totals no longer combine incompatible units; food summaries retain each record’s unit.
+- States and interactions: add forms, quick actions, global pet switcher, filters, details, delete confirmations, task completion/postponement, loading, error/retry and empty states are implemented.
+- Accessibility: controls have semantic labels, focus-visible treatment, keyboard-accessible native inputs, useful alt text, reduced-motion handling and mobile tap targets.
+
+## Patches made during QA
+
+1. Reflowed the mobile pet profile into a centered single-column identity card.
+2. Wrapped mobile health status filters to remove the internal horizontal scrollbar.
+3. Made the mobile top bar opaque and added global focus-visible treatment.
+4. Added medical photo thumbnails to health timeline records.
+5. Replaced the invalid cross-unit “total quantity” calculation with a category count.
+6. Removed the hidden memory route from the active application bundle and redirected unknown routes home.
+
+## Follow-up polish
+
+- P3: when the backend later supports medical-record updates, add a “mark recovered” action to the detail dialog instead of requiring record replacement.
+
+final result: passed

@@ -122,4 +122,31 @@ describe('local pet repository', () => {
     })
     expect((await repository.listWeights(pet.id)).map((item) => item.weightKg)).toEqual([32.1, 31.8])
   })
+
+  it('recalculates current weight after deleting the latest measurement', async () => {
+    const initialState = createSeedState()
+    const pet = initialState.pets[0]
+    initialState.weights = [
+      { id: 'weight-old', petId: pet.id, measuredAt: '2026-05-01', weightKg: 31.2 },
+      { id: 'weight-latest', petId: pet.id, measuredAt: '2026-06-01', weightKg: 31.8 },
+    ]
+    pet.currentWeight = 31.8
+    const repository = createLocalPetRepository(storage, initialState)
+
+    await repository.removeWeight('weight-latest')
+
+    expect((await repository.getPet(pet.id))?.currentWeight).toBe(31.2)
+  })
+
+  it('converts local asset uploads to data URLs', async () => {
+    const repository = createLocalPetRepository(storage) as ReturnType<typeof createLocalPetRepository> & {
+      uploadAssets?: (files: File[], petId: string, kind: 'avatar') => Promise<string[]>
+    }
+    const file = new File(['avatar'], 'avatar.png', { type: 'image/png' })
+
+    expect(repository.uploadAssets).toBeTypeOf('function')
+    await expect(repository.uploadAssets!([file], 'pet-doubao', 'avatar')).resolves.toEqual([
+      expect.stringMatching(/^data:image\/png;base64,/),
+    ])
+  })
 })

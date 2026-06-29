@@ -1,10 +1,10 @@
 import { Trash } from '@phosphor-icons/react'
 import { useState, type FormEvent } from 'react'
+import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { FormField } from '../../components/FormField'
 import { Modal } from '../../components/Modal'
 import { usePetData } from '../../data/PetDataProvider'
 import type { Pet, PetSpecies } from '../../domain/types'
-import { filesToDataUrls } from '../../lib/files'
 
 const ageLabelFromBirthDate = (birthDate: string) => {
   const born = new Date(`${birthDate}T00:00:00`)
@@ -28,6 +28,8 @@ export function PetForm({
 }) {
   const { repository, refreshPets } = usePetData()
   const [error, setError] = useState('')
+  const [pending, setPending] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -39,37 +41,63 @@ export function PetForm({
       setError('请填写名字、生日和正确的体重')
       return
     }
-    const avatarFiles = (form.getAll('avatar') as File[]).filter((file) => file.size > 0)
-    const species = String(form.get('species')) as PetSpecies
-    const avatar = avatarFiles[0]
-      ? (await filesToDataUrls(avatarFiles))[0]
-      : pet?.avatar ?? (species === 'cat' ? '/assets/cat-avatar.jpg' : '/assets/dog-avatar.jpg')
-    const input = {
-      name,
-      species,
-      breed: String(form.get('breed') ?? '').trim() || '等待填写品种',
-      birthDate,
-      ageLabel: ageLabelFromBirthDate(birthDate),
-      currentWeight,
-      status: String(form.get('status') ?? '').trim() || '健康',
-      avatar,
-      reminder: pet?.reminder ?? '建立第一条记录',
-      reminderDate: pet?.reminderDate ?? '今天',
+    setPending(true)
+    setError('')
+    try {
+      const avatarFiles = (form.getAll('avatar') as File[]).filter((file) => file.size > 0)
+      const species = String(form.get('species')) as PetSpecies
+      const fallbackAvatar = pet?.avatar ?? (species === 'cat' ? '/assets/cat-avatar.jpg' : '/assets/dog-avatar.jpg')
+      const input = {
+        name,
+        species,
+        breed: String(form.get('breed') ?? '').trim() || '等待填写品种',
+        birthDate,
+        ageLabel: ageLabelFromBirthDate(birthDate),
+        currentWeight,
+        status: String(form.get('status') ?? '').trim() || '健康',
+        avatar: fallbackAvatar,
+        reminder: pet?.reminder ?? '建立第一条记录',
+        reminderDate: pet?.reminderDate ?? '今天',
+      }
+      let saved = pet
+        ? await repository.updatePet(pet.id, input)
+        : await repository.addPet(input)
+      if (!pet || pet.currentWeight !== currentWeight) {
+        await repository.addWeight({
+          petId: saved.id,
+          measuredAt: new Date().toISOString().slice(0, 10),
+          weightKg: currentWeight,
+        })
+      }
+      if (avatarFiles.length > 0) {
+        const [avatar] = await repository.uploadAssets(avatarFiles, saved.id, 'avatar')
+        if (avatar) saved = await repository.updatePet(saved.id, { avatar })
+      }
+      await refreshPets()
+      onSaved(saved)
+      onClose()
+    } catch {
+      setError('宠物资料没有保存成功，请检查图片后重试。')
+    } finally {
+      setPending(false)
     }
-    const saved = pet
-      ? await repository.updatePet(pet.id, input)
-      : await repository.addPet(input)
-    await refreshPets()
-    onSaved(saved)
-    onClose()
   }
 
   const remove = async () => {
-    if (!pet || !window.confirm(`确定删除${pet.name}及其全部记录吗？`)) return
-    await repository.removePet(pet.id)
-    await refreshPets()
-    onSaved()
-    onClose()
+    if (!pet) return
+    setPending(true)
+    setError('')
+    try {
+      await repository.removePet(pet.id)
+      await refreshPets()
+      onSaved()
+      onClose()
+    } catch {
+      setError('暂时无法删除，请稍后重试。')
+      setConfirmingDelete(false)
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -93,13 +121,14 @@ export function PetForm({
         <FormField label="头像" name="avatar" type="file" accept="image/jpeg,image/png,image/webp" />
         {error && <p className="form-error" role="alert">{error}</p>}
         <footer className="form-actions spread">
-          <div>{pet && <button type="button" className="danger-button" onClick={remove}><Trash size={17} />删除宠物</button>}</div>
+          <div>{pet && <button type="button" className="danger-button" onClick={() => setConfirmingDelete(true)} disabled={pending}><Trash size={17} />删除宠物</button>}</div>
           <div>
-            <button type="button" className="button ghost" onClick={onClose}>取消</button>
-            <button className="button primary" type="submit">保存宠物</button>
+            <button type="button" className="button ghost" onClick={onClose} disabled={pending}>取消</button>
+            <button className="button primary" type="submit" disabled={pending}>{pending ? '正在保存…' : '保存宠物'}</button>
           </div>
         </footer>
       </form>
+      {confirmingDelete && pet && <ConfirmDialog title={`删除${pet.name}？`} description="这会同时删除它的病历、生活和体重记录，且无法恢复。" pending={pending} onCancel={() => setConfirmingDelete(false)} onConfirm={() => void remove()} />}
     </Modal>
   )
 }

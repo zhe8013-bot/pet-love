@@ -6,7 +6,7 @@ import type {
   Pet,
   WeightEntry,
 } from '../domain/types'
-import type { PetRepository } from './repository'
+import type { AssetKind, PetRepository } from './repository'
 
 async function request<T>(url: string, init?: RequestInit, notFoundAsUndefined = false): Promise<T> {
   const res = await fetch(url, init)
@@ -21,6 +21,19 @@ async function request<T>(url: string, init?: RequestInit, notFoundAsUndefined =
 
 export function createHttpPetRepository(baseUrl: string): PetRepository {
   return {
+    async uploadAssets(files: File[], petId: string, kind: AssetKind) {
+      return Promise.all(files.map(async (file) => {
+        const form = new FormData()
+        form.append('file', file)
+        form.append('petId', petId)
+        form.append('kind', kind)
+        const asset = await request<{ url: string }>(`${baseUrl}/assets`, {
+          method: 'POST',
+          body: form,
+        })
+        return asset.url
+      }))
+    },
     async listPets() {
       return request<Pet[]>(`${baseUrl}/pets`)
     },

@@ -1,12 +1,12 @@
 # PetPlanet 后端交接说明
 
-这份文档供接手后端的 Claude 使用。前端已经完成，当前通过 src/data/repository.ts 的 PetRepository 接口读写 localStorage。接入后端时不要改页面组件，只新增 HTTP repository 并在 PetDataProvider 中根据环境变量选择实现。
+这份文档供继续后端工作的 Claude 使用。前端只通过 `src/data/repository.ts` 的 `PetRepository` 读写数据；本地实现和 `src/data/httpRepository.ts` 的 HTTP 实现都已存在，页面组件不应直接调用 `fetch`。仓库中的 Express + SQLite 后端是可运行基线，后续改动应保持接口契约一致。
 
 ## 接入目标
 
 - 本地开发：前端 http://localhost:61413，后端建议 http://localhost:61414。
 - VITE_DATA_MODE=local 使用当前本地 mock；VITE_DATA_MODE=api 使用 HTTP repository。
-- VITE_API_BASE_URL=/api。
+- HTTP repository 以 `/api` 为基地址。
 - 数据结构以 src/domain/types.ts 为唯一前端事实来源。
 - 金额 API 使用人民币元；后端数据库建议保存为分，并在 API 边界转换。
 - 日期使用 YYYY-MM-DD，月份使用 YYYY-MM。
@@ -44,7 +44,7 @@
 
 新增体重后，宠物响应中的 currentWeight 应返回最新测量值。
 
-### 回忆
+### 回忆（预留，当前前端未启用）
 
 - GET /api/pets/:petId/memories → Memory[]，按 occurredAt 升序。
 - POST /api/pets/:petId/memories，请求体为去掉 id 的回忆 → Memory
@@ -61,12 +61,12 @@
 
 ## 前端 HTTP Repository
 
-新增 src/data/httpRepository.ts，导出 createHttpPetRepository(baseUrl: string): PetRepository。
+`src/data/httpRepository.ts` 已导出 `createHttpPetRepository(baseUrl: string): PetRepository`。
 
 实现规则：
 
 1. 所有非 2xx 响应转换为带中文消息的 Error。
-2. 创建带图片的宠物、病历或回忆前，先调用 /assets，再提交返回 URL。
+2. 图片由 `repository.uploadAssets()` 先上传，再将返回 URL 写入宠物或病历。
 3. 页面组件不得直接调用 fetch。
 4. PetDataProvider 只选择 repository，不保存第二套缓存，避免云端与本地记录分叉。
 
@@ -82,6 +82,6 @@
 - 新增病历后列表立即按日期重排。
 - 月度切换只返回对应月份的消耗。
 - 同月允许多条体重；当前体重取日期最新的一条。
-- 新增回忆后同时出现在 3D 星河与成长回顾。
+- 预留回忆接口不影响当前四个非 3D 页面。
 - 删除宠物不会留下孤儿图片。
 - 后端不可用时返回明确错误，前端不得静默回退 localStorage。

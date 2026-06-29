@@ -6,6 +6,7 @@ import { usePetData } from '../../data/PetDataProvider'
 export function WeightForm({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
   const { currentPetId, repository, refreshPets } = usePetData()
   const [error, setError] = useState('')
+  const [pending, setPending] = useState(false)
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -16,10 +17,18 @@ export function WeightForm({ onClose, onSaved }: { onClose: () => void; onSaved:
       setError('请填写正确的日期与体重')
       return
     }
-    await repository.addWeight({ petId: currentPetId, measuredAt, weightKg })
-    await refreshPets()
-    onSaved()
-    onClose()
+    setPending(true)
+    setError('')
+    try {
+      await repository.addWeight({ petId: currentPetId, measuredAt, weightKg })
+      await refreshPets()
+      onSaved()
+      onClose()
+    } catch {
+      setError('体重没有保存成功，请稍后重试。')
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -31,8 +40,8 @@ export function WeightForm({ onClose, onSaved }: { onClose: () => void; onSaved:
         </div>
         {error && <p className="form-error" role="alert">{error}</p>}
         <footer className="form-actions">
-          <button type="button" className="button ghost" onClick={onClose}>取消</button>
-          <button className="button primary" type="submit">保存体重</button>
+          <button type="button" className="button ghost" onClick={onClose} disabled={pending}>取消</button>
+          <button className="button primary" type="submit" disabled={pending}>{pending ? '正在保存…' : '保存体重'}</button>
         </footer>
       </form>
     </Modal>
