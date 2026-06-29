@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PetCare Pro - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#FFF9F3",
+                        "primary": "#924a37",
+                        "inverse-primary": "#ffb4a1",
+                        "on-background": "#201926",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "surface-container-highest": "#ebdef1",
+                        "on-surface-variant": "#54433f",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdea4",
+                        "on-secondary-container": "#4e3d86",
+                        "secondary-fixed": "#e8deff",
+                        "tertiary": "#7a5904",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#3b0900",
+                        "surface-container": "#f7e9fc",
+                        "surface-container-high": "#f1e4f7",
+                        "subtle-text": "#756B7D",
+                        "surface-container-low": "#fcf0ff",
+                        "tertiary-fixed-dim": "#edc068",
+                        "outline": "#87736e",
+                        "primary-fixed-dim": "#ffb4a1",
+                        "on-tertiary-container": "#4f3800",
+                        "surface-variant": "#ebdef1",
+                        "surface": "#fff7fe",
+                        "on-primary-container": "#672818",
+                        "secondary": "#64529d",
+                        "border-light": "#E8E2DA",
+                        "on-secondary-fixed-variant": "#4c3a84",
+                        "secondary-container": "#c0adff",
+                        "on-secondary-fixed": "#1f0756",
+                        "deep-plum": "#2E223D",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#d9c1bb",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "surface-dim": "#e3d6e8",
+                        "primary-fixed": "#ffdbd2",
+                        "on-tertiary-fixed": "#261900",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#924a37",
+                        "on-surface": "#201926",
+                        "primary-container": "#e88f78",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#fff7fe",
+                        "inverse-on-surface": "#faecff",
+                        "on-primary-fixed-variant": "#753322",
+                        "inverse-surface": "#352d3b",
+                        "tertiary-container": "#caa04b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "64px",
+                        "element-gap": "16px",
+                        "margin-desktop": "40px",
+                        "gutter": "24px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["beVietnamPro"],
+                        "display-lg": ["beVietnamPro"],
+                        "body-md": ["beVietnamPro"],
+                        "headline-md": ["beVietnamPro"],
+                        "label-md": ["beVietnamPro"],
+                        "body-lg": ["beVietnamPro"],
+                        "label-sm": ["beVietnamPro"],
+                        "headline-lg": ["beVietnamPro"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    },
+                    "boxShadow": {
+                        'ambient': '0 4px 20px -4px rgba(46, 34, 61, 0.05)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #FFF9F3; /* Creamy White */
+            color: #2E223D; /* Deep Plum */
+        }
+        .card-radius {
+            border-radius: 22px;
+        }
+        .soft-shadow {
+            box-shadow: 0 4px 20px -4px rgba(46, 34, 61, 0.05);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="font-body-md antialiased min-h-screen">
+<!-- SideNavBar -->
+<nav class="bg-background dark:bg-background h-screen w-64 fixed left-0 top-0 border-r border-border-light dark:border-outline-variant flex flex-col h-full py-section-gap z-50">
+<div class="px-6 mb-12">
+<h1 class="font-headline-md text-headline-md text-deep-plum dark:text-inverse-on-surface">PetCare Pro</h1>
+<p class="text-subtle-text text-label-sm mt-1">Multi-pet Management</p>
+</div>
+<div class="flex-1">
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold border-r-4 border-primary bg-surface-container-low hover:bg-surface-container-high transition-colors duration-200 Active: scale-[0.99] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-subtle-text hover:text-deep-plum hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">pets</span>
+<span class="font-label-md text-label-md">Pet Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-subtle-text hover:text-deep-plum hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-md text-label-md">Health Records</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-subtle-text hover:text-deep-plum hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="font-label-md text-label-md">Life Logs</span>
+</a>
+</div>
+<div class="px-6 mt-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a user with a warm smile, well-lit studio lighting, modern minimalist background, high quality, realistic photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhylLYl4J6SsXo_BEc3BrB89-5HFqMN4VLnjZoOJiHjmi8AraxBRToiCucQy7_iMKDaNIhQAviruM2wkSLBsU5zR36CEln6O6U_JlHVGAIXZ_utRxbBzlh2r1Skg93M-E5vuU8oDCMD5-aOKlwFWZx5Qz8ASNpNOPwYas__459op-QkZSNouHnZMtq7SSeitt7rpwOOJFEJFuxiBDTZIY_6bcgSi_ApuMlhc1XEzadG9u8sYAM9YlQYXtL03SKKyKH-3a2ft25rdk"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-deep-plum">User</p>
+<p class="text-label-sm text-subtle-text">Free Plan</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="bg-background/80 backdrop-blur-md fixed top-0 right-0 w-[calc(100%-16rem)] z-40 shadow-sm flex justify-between items-center h-20 px-margin-desktop ml-64">
+<div class="flex items-center gap-8">
+<h2 class="font-headline-md text-headline-md text-deep-plum">PetCare Pro</h2>
+<nav class="hidden md:flex gap-6">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md hover:text-primary transition-all" href="#">Daisy</a>
+<a class="text-subtle-text hover:text-deep-plum pb-1 font-label-md text-label-md hover:text-primary transition-all" href="#">Luna</a>
+<a class="text-subtle-text hover:text-deep-plum pb-1 font-label-md text-label-md hover:text-primary transition-all" href="#">Max</a>
+</nav>
+</div>
+<div>
+<button class="bg-primary-container text-white px-6 py-2.5 rounded-[14px] font-label-md text-label-md hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined">add</span>
+                Add New
+            </button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-28 px-margin-desktop pb-section-gap">
+<!-- Greeting -->
+<section class="mb-12">
+<h1 class="font-display-lg text-display-lg text-deep-plum">下午好, 这里的每一刻都值得温柔以待</h1>
+<p class="font-body-lg text-body-lg text-subtle-text mt-2">Good afternoon, every moment here deserves to be treated gently.</p>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Pet Cards (Col 1-8) -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-element-gap">
+<h3 class="font-headline-md text-headline-md text-deep-plum mb-2">我的伙伴 (My Companions)</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-element-gap">
+<!-- Pet 1 -->
+<div class="bg-white card-radius p-4 soft-shadow border border-border-light relative overflow-hidden group">
+<div class="aspect-square rounded-xl overflow-hidden mb-4">
+<img alt="Golden Retriever" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLu7EqiPppok-mCavBBY_iyynAq0KZ1eTyjzGAYL-LiraoswLJ0yO3QksjvCVi0Hb5pHJ2dHK98WkTlaQrT6UNcUGb7JUW5lBYevEGTFxkH5AmHlasWRebrdzZiHmHNbvnOfPXJe5Cj4ltKNlrdgMQoOWb6xT2jEHIduw_9ED51n33i8GKXOqnq7XD5AEeeIpf4S5aevJ4mXI0J14XQ9nOvCa73hOQlEGujP8yc08j8KGLfIHlEoY03U2j0"/>
+</div>
+<h4 class="font-headline-md text-headline-md text-deep-plum">豆包</h4>
+<p class="text-subtle-text text-label-sm mb-3">Golden Retriever</p>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container-low text-primary rounded-full text-label-sm border border-primary-container/30">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            健康状态良好
+                        </div>
+</div>
+<!-- Pet 2 -->
+<div class="bg-white card-radius p-4 soft-shadow border border-border-light relative overflow-hidden group">
+<div class="aspect-square rounded-xl overflow-hidden mb-4">
+<img alt="Orange Cat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLsRW8wo0XX-oIIHrynfc0jPRWcDiKa14yvBk81OLY67_2ddhrzLnMaSNoAZXHeF6eazj7lIEZkB88ZaZSQwcWVXTqUCc9C4wcT9eWTzCGhlckoOv7GUcPMlEdSxqjySpkDoZcLKRxhNOk14G_l17w6Yj9L5C_HIxA0PcNymxp9WWuRHq4bx8d4wrXjjGK0apYVJerWMV8vcjzkvC2A64psXCfF-c0b2WXlHX-msaQiAHkUXzsth4NzQ0l8"/>
+</div>
+<h4 class="font-headline-md text-headline-md text-deep-plum">米粒</h4>
+<p class="text-subtle-text text-label-sm mb-3">Orange Cat</p>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 bg-error-container/30 text-error rounded-full text-label-sm border border-error/30">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+                            待驱虫
+                        </div>
+</div>
+<!-- Pet 3 -->
+<div class="bg-white card-radius p-4 soft-shadow border border-border-light relative overflow-hidden group">
+<div class="aspect-square rounded-xl overflow-hidden mb-4">
+<img alt="Border Collie" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLtNHDUqYLTPkRq7RH6JCRXVhxu6qDL_Ci9NJO5qrSRFCXnfjc4hdeu_8uR3ELCJUkQRsFzQp0eZn-J-m8G74SpyJbfHQu28YRe63ZfhsM63xpDRysft_g0GCykkXzu8UC5fdJ9thaizk5kmLgoz9ha_c5qxE_AYY8nPZeH6wRcSo7BhVTmNLRLISDX2-jsLXzY_i4oCe5PO2pb5fMJUXL3r60eE-5ntVW0WC1H_sxSqbQJbXeqTXDljEQ"/>
+</div>
+<h4 class="font-headline-md text-headline-md text-deep-plum">糖糖</h4>
+<p class="text-subtle-text text-label-sm mb-3">Border Collie</p>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container-low text-primary rounded-full text-label-sm border border-primary-container/30">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            健康状态良好
+                        </div>
+</div>
+</div>
+<!-- Monthly Data -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-element-gap mt-8">
+<div class="bg-white card-radius p-6 soft-shadow border border-border-light h-[300px] flex flex-col">
+<h3 class="font-headline-md text-headline-md text-deep-plum mb-4">本月体重趋势 (Weight Trend)</h3>
+<div class="flex-1 relative w-full">
+<canvas id="weightChart"></canvas>
+</div>
+</div>
+<div class="bg-white card-radius p-6 soft-shadow border border-border-light h-[300px] flex flex-col">
+<h3 class="font-headline-md text-headline-md text-deep-plum mb-4">本月消耗汇总 (Consumption)</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center p-3 rounded-lg bg-surface-container-lowest border border-border-light">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-deep-plum">主粮 (Food)</p>
+<p class="text-label-sm text-subtle-text">Premium Kibble</p>
+</div>
+</div>
+<span class="font-headline-md text-headline-md text-primary">4.5 kg</span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-lg bg-surface-container-lowest border border-border-light">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">cookie</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-deep-plum">零食 (Treats)</p>
+<p class="text-label-sm text-subtle-text">Dental Sticks</p>
+</div>
+</div>
+<span class="font-headline-md text-headline-md text-primary">12 pcs</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Content (Col 9-12) -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-element-gap">
+<!-- Today's To-Do -->
+<div class="bg-white card-radius p-6 soft-shadow border border-border-light">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md text-deep-plum">今日待办 (Today's Tasks)</h3>
+<span class="px-3 py-1 bg-surface-container-low text-primary rounded-full text-label-sm font-medium">3 Pending</span>
+</div>
+<div class="space-y-4">
+<!-- Task 1 -->
+<div class="p-4 rounded-xl border border-border-light hover:border-primary/30 transition-colors bg-surface-bright">
+<div class="flex items-start justify-between">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-error mt-0.5">medication</span>
+<div>
+<p class="font-label-md text-label-md text-deep-plum">驱虫提醒 (De-worming)</p>
+<p class="text-label-sm text-subtle-text mt-1">For 米粒 (Orange Cat)</p>
+</div>
+</div>
+</div>
+<div class="flex gap-2 mt-4">
+<button class="flex-1 bg-primary-container text-white py-2 rounded-lg font-label-md text-label-sm hover:opacity-90 transition-opacity">完成 (Complete)</button>
+<button class="flex-1 border border-secondary text-secondary py-2 rounded-lg font-label-md text-label-sm hover:bg-secondary/5 transition-colors">稍后 (Later)</button>
+</div>
+</div>
+<!-- Task 2 -->
+<div class="p-4 rounded-xl border border-border-light hover:border-primary/30 transition-colors bg-surface-bright">
+<div class="flex items-start justify-between">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-secondary mt-0.5">event</span>
+<div>
+<p class="font-label-md text-label-md text-deep-plum">复诊预约 (Follow-up visit)</p>
+<p class="text-label-sm text-subtle-text mt-1">Tomorrow, 10:00 AM</p>
+</div>
+</div>
+</div>
+<div class="flex gap-2 mt-4">
+<button class="flex-1 bg-primary-container text-white py-2 rounded-lg font-label-md text-label-sm hover:opacity-90 transition-opacity">完成 (Complete)</button>
+<button class="flex-1 border border-secondary text-secondary py-2 rounded-lg font-label-md text-label-sm hover:bg-secondary/5 transition-colors">稍后 (Later)</button>
+</div>
+</div>
+<!-- Task 3 -->
+<div class="p-4 rounded-xl border border-border-light hover:border-primary/30 transition-colors bg-surface-bright">
+<div class="flex items-start justify-between">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-tertiary mt-0.5">shower</span>
+<div>
+<p class="font-label-md text-label-md text-deep-plum">周末洗澡 (Grooming)</p>
+<p class="text-label-sm text-subtle-text mt-1">For 豆包 (Golden Retriever)</p>
+</div>
+</div>
+</div>
+<div class="flex gap-2 mt-4">
+<button class="flex-1 bg-primary-container text-white py-2 rounded-lg font-label-md text-label-sm hover:opacity-90 transition-opacity">完成 (Complete)</button>
+<button class="flex-1 border border-secondary text-secondary py-2 rounded-lg font-label-md text-label-sm hover:bg-secondary/5 transition-colors">稍后 (Later)</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Records & Activities (Glassmorphism inspired style) -->
+<div class="glass-panel card-radius p-6 soft-shadow relative overflow-hidden">
+<!-- Subtle background decoration -->
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/5 rounded-full blur-2xl"></div>
+<h3 class="font-headline-md text-headline-md text-deep-plum mb-4 relative z-10">最近记录 (Recent Logs)</h3>
+<div class="space-y-6 relative z-10">
+<div class="relative pl-6 border-l-2 border-border-light">
+<div class="absolute w-3 h-3 bg-white border-2 border-primary rounded-full -left-[7px] top-1"></div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-1">Today, 08:30 AM</p>
+<p class="font-label-md text-label-md text-deep-plum">晨间散步 (Morning Walk)</p>
+<p class="text-body-md text-subtle-text mt-1 text-sm">豆包 and 糖糖 walked for 2.5 km.</p>
+</div>
+<div class="relative pl-6 border-l-2 border-border-light">
+<div class="absolute w-3 h-3 bg-white border-2 border-secondary rounded-full -left-[7px] top-1"></div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-1">Yesterday</p>
+<p class="font-label-md text-label-md text-deep-plum">年度体检 (Annual Checkup)</p>
+<p class="text-body-md text-subtle-text mt-1 text-sm">All cleared for 糖糖. Vaccination updated.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Chart.js implementation for Weight Trend
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('weightChart').getContext('2d');
+            
+            // Gradient fill
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(146, 74, 55, 0.2)'); // Primary color with opacity
+            gradient.addColorStop(1, 'rgba(146, 74, 55, 0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['W1', 'W2', 'W3', 'W4'],
+                    datasets: [{
+                        label: '豆包 (kg)',
+                        data: [28.2, 28.3, 28.5, 28.4],
+                        borderColor: '#924a37', // primary
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#FFF',
+                        pointBorderColor: '#924a37',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#2E223D',
+                            titleFont: { family: 'Be Vietnam Pro', size: 12 },
+                            bodyFont: { family: 'Be Vietnam Pro', size: 14 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Be Vietnam Pro', size: 12 }, color: '#756B7D' }
+                        },
+                        y: {
+                            grid: { color: '#E8E2DA', borderDash: [5, 5] },
+                            ticks: { 
+                                font: { family: 'Be Vietnam Pro', size: 12 }, 
+                                color: '#756B7D',
+                                stepSize: 0.2
+                            },
+                            border: { display: false }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                }
+            });
+        });
+    </script>
+</body></html>

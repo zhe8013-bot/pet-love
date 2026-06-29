@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>生活记录 - PetPlanet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#e8deff",
+                        "on-tertiary-container": "#4f3800",
+                        "outline-variant": "#d9c1bb",
+                        "on-primary": "#ffffff",
+                        "secondary": "#64529d",
+                        "on-surface": "#201926",
+                        "surface-dim": "#e3d6e8",
+                        "secondary-container": "#c0adff",
+                        "primary-container": "#e88f78",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "on-secondary-fixed": "#1f0756",
+                        "primary": "#924a37",
+                        "surface-container-highest": "#ebdef1",
+                        "surface-bright": "#fff7fe",
+                        "on-primary-fixed": "#3b0900",
+                        "border-light": "#E8E2DA",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#54433f",
+                        "surface-variant": "#ebdef1",
+                        "inverse-surface": "#352d3b",
+                        "subtle-text": "#756B7D",
+                        "on-primary-container": "#672818",
+                        "on-background": "#201926",
+                        "tertiary-fixed-dim": "#edc068",
+                        "on-secondary-fixed-variant": "#4c3a84",
+                        "surface-container": "#f7e9fc",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "surface-container-low": "#fcf0ff",
+                        "deep-plum": "#2E223D",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#753322",
+                        "on-secondary-container": "#4e3d86",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#7a5904",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#faecff",
+                        "on-tertiary-fixed": "#261900",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#ffb4a1",
+                        "background": "#FFF9F3",
+                        "surface-container-high": "#f1e4f7",
+                        "surface": "#fff7fe",
+                        "tertiary-container": "#caa04b",
+                        "tertiary-fixed": "#ffdea4",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#924a37",
+                        "inverse-primary": "#ffb4a1",
+                        "primary-fixed": "#ffdbd2",
+                        "outline": "#87736e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "element-gap": "16px",
+                        "section-gap": "64px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "40px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-lg": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen overflow-x-hidden flex selection:bg-primary-container selection:text-on-primary-container">
+<!-- Side Navigation Shell -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-background border-r border-border-light flex flex-col py-10 px-6 z-40">
+<!-- Brand Header -->
+<div class="mb-12 px-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)]">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">PetPlanet</h1>
+<p class="font-label-sm text-label-sm text-subtle-text">Warm Lantern Garden</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">pets</span>
+<span class="font-label-md text-label-md">Pet Profiles</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-md text-label-md">Health Records</span>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-surface-container/50 scale-95 transition-transform hover:bg-surface-container duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+<span class="font-label-md text-label-md">Life Logs</span>
+</a>
+</div>
+<!-- User Profile Area at Bottom -->
+<div class="mt-auto pt-6 border-t border-border-light">
+<div class="flex items-center gap-3 px-2 cursor-pointer group">
+<img class="w-10 h-10 rounded-full object-cover border border-border-light group-hover:border-primary-container transition-colors" data-alt="A small circular avatar of a pet owner, showing a smiling face in soft warm lighting against a blurred natural background, professional editorial photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4enDPkDKkfmuuJTCssH4JZ7J9WXWx8_B_4-YguKHZkxXDiidbCQ1CGc3wb1ctAt_EqGzbf-9bpDWhJ8mYqw2uc1uBsVyP69csBaJkcE3CUuJQt8tPa0iT3Hd3s9e2kr-Byy6jVB8VI4iRD739tg7-_w7PbFVpdaSU4XWiODYzzsMaNdNuqG2foc8HGGoovHg7ACoyAVWCgLeO7rd8tgd7Jj8-JrYvMo1DYtHwfQHdS17yqhPqiw9U-mGD6OjFr3IQu9Jn2repM5U"/>
+<div>
+<p class="font-label-md text-label-md text-on-background">Owner Avatar</p>
+<p class="font-label-sm text-label-sm text-subtle-text">Manage Account</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Area Wrapper -->
+<div class="flex-1 ml-64 flex flex-col min-h-screen">
+<!-- Top App Bar Shell -->
+<header class="docked full-width top-0 sticky bg-background/80 backdrop-blur-md border-b border-border-light z-30">
+<div class="flex justify-between items-center w-full px-10 h-16">
+<!-- Left: Context Switchers -->
+<div class="flex items-center gap-6">
+<!-- Pet Switcher -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-surface-container-high transition-all text-on-background focus:ring-2 focus:ring-primary/20 outline-none group">
+<img class="w-6 h-6 rounded-full object-cover" data-alt="A tiny thumbnail portrait of a cute golden retriever dog named Doubao, soft warm studio lighting, highly detailed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKsyPZUWp_nw2ohs3bbaBevZKeafJdK6dkey95aXHkzqqHFylOtSY2PMOyc7DKG1GUne5NO87BSrbDHoS5JL9YsH-QBG1LFK_u8FEkiGs0QdYAutzvKJZgaCgC80j7_V31yL4AV_uJxIldtQ1HMAAnZfGg4MIa_xNv7iZ5_NgAvdyLmRfrecTCHvur3BxTtiwoEZdiwrGoeTMi4qX5rBKm3hF_eCJT0hrJeR9R9xZb4gAkLb59P3TDLatXXWwFKMAQpAoWO4UZcLE"/>
+<span class="font-label-md text-label-md font-bold">豆包</span>
+<span class="material-symbols-outlined text-subtle-text group-hover:text-primary transition-colors" style="font-size: 18px;">expand_more</span>
+</button>
+<div class="h-4 w-px bg-border-light"></div>
+<!-- Month Switcher -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-surface-container-high transition-all text-on-background focus:ring-2 focus:ring-primary/20 outline-none group">
+<span class="material-symbols-outlined text-primary-container">calendar_month</span>
+<span class="font-label-md text-label-md">2026年6月</span>
+<span class="material-symbols-outlined text-subtle-text group-hover:text-primary transition-colors" style="font-size: 18px;">expand_more</span>
+</button>
+</div>
+<!-- Right: Actions & Secondary Controls -->
+<div class="flex items-center gap-4">
+<button class="h-10 px-6 rounded-[14px] bg-primary-container text-white font-label-md text-label-md flex items-center gap-2 hover:bg-primary transition-colors shadow-sm focus:ring-2 focus:ring-primary/20 outline-none">
+<span class="material-symbols-outlined" style="font-size: 20px;">add_circle</span>
+                        记录消耗
+                    </button>
+<button class="h-10 px-6 rounded-[14px] border border-secondary text-secondary font-label-md text-label-md flex items-center gap-2 hover:bg-secondary/5 transition-colors focus:ring-2 focus:ring-secondary/20 outline-none">
+<span class="material-symbols-outlined" style="font-size: 20px;">monitor_weight</span>
+                        记录体重
+                    </button>
+<div class="h-6 w-px bg-border-light mx-2"></div>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors focus:ring-2 focus:ring-primary/20 outline-none">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors focus:ring-2 focus:ring-primary/20 outline-none">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-10">
+<div class="max-w-[1100px] mx-auto grid grid-cols-12 gap-gutter">
+<!-- Left Column (Main Content) -->
+<div class="col-span-8 flex flex-col gap-8">
+<!-- Section: Monthly Summary Bento -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-background mb-4">月度总览</h2>
+<div class="grid grid-cols-2 gap-4">
+<!-- Metric 1: Total Spending -->
+<div class="bg-white rounded-[22px] p-6 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] border border-border-light/50 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary-container/10 rounded-full blur-xl group-hover:bg-primary-container/20 transition-all"></div>
+<div class="flex items-center gap-3 mb-2 text-subtle-text">
+<span class="material-symbols-outlined text-primary-container">account_balance_wallet</span>
+<span class="font-label-md text-label-md">本月总花费</span>
+</div>
+<div class="flex items-baseline gap-1 text-on-background">
+<span class="font-label-md text-label-md">¥</span>
+<span class="font-display-lg text-display-lg">1,280</span>
+</div>
+<div class="mt-2 inline-flex items-center gap-1 text-tertiary px-2 py-1 bg-surface-container-low rounded-md border border-border-light/50">
+<span class="material-symbols-outlined" style="font-size: 14px;">arrow_downward</span>
+<span class="font-label-sm text-label-sm">较上月 -12%</span>
+</div>
+</div>
+<!-- Metric 2: Food Usage -->
+<div class="bg-white rounded-[22px] p-6 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] border border-border-light/50">
+<div class="flex items-center gap-3 mb-2 text-subtle-text">
+<span class="material-symbols-outlined text-secondary">restaurant</span>
+<span class="font-label-md text-label-md">主粮用量</span>
+</div>
+<div class="flex items-baseline gap-1 text-on-background">
+<span class="font-display-lg text-display-lg">3.5</span>
+<span class="font-label-md text-label-md">kg</span>
+</div>
+<div class="mt-2 w-full bg-surface-variant h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 70%;"></div>
+</div>
+<p class="font-label-sm text-label-sm text-subtle-text mt-2 text-right">剩余约 1.5kg</p>
+</div>
+<!-- Metric 3: Water -->
+<div class="bg-white rounded-[16px] p-5 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] border border-border-light/50">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2 text-subtle-text">
+<span class="material-symbols-outlined text-blue-400" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+<span class="font-label-md text-label-md">日均饮水量</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-background font-semibold">320<span class="text-sm font-normal text-subtle-text ml-1">ml</span></span>
+</div>
+<p class="font-label-sm text-label-sm text-secondary">处于健康标准区间</p>
+</div>
+<!-- Metric 4: Grooming -->
+<div class="bg-white rounded-[16px] p-5 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] border border-border-light/50">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2 text-subtle-text">
+<span class="material-symbols-outlined text-tertiary-container">clean_hands</span>
+<span class="font-label-md text-label-md">护理次数</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-background font-semibold">4<span class="text-sm font-normal text-subtle-text ml-1">次</span></span>
+</div>
+<div class="flex gap-1 mt-1">
+<span class="inline-block px-2 py-0.5 bg-surface-container rounded text-[10px] text-secondary">洗澡 x1</span>
+<span class="inline-block px-2 py-0.5 bg-surface-container rounded text-[10px] text-secondary">驱虫 x1</span>
+<span class="inline-block px-2 py-0.5 bg-surface-container rounded text-[10px] text-secondary">剪甲 x2</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Consumption Records Table -->
+<section class="bg-white rounded-[22px] p-6 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] border border-border-light/50 flex flex-col h-full">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-md text-headline-md text-on-background">消耗明细</h2>
+<!-- Filter Tabs -->
+<div class="flex bg-surface-container-low p-1 rounded-lg border border-border-light/50">
+<button class="px-4 py-1.5 rounded-md bg-white shadow-sm text-primary font-label-sm text-label-sm">全部</button>
+<button class="px-4 py-1.5 rounded-md text-subtle-text hover:text-on-background transition-colors font-label-sm text-label-sm">食品</button>
+<button class="px-4 py-1.5 rounded-md text-subtle-text hover:text-on-background transition-colors font-label-sm text-label-sm">医疗</button>
+<button class="px-4 py-1.5 rounded-md text-subtle-text hover:text-on-background transition-colors font-label-sm text-label-sm">洗护</button>
+</div>
+</div>
+<!-- Table Header -->
+<div class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-border-light text-subtle-text font-label-sm text-label-sm uppercase tracking-wider">
+<div class="col-span-4">类别 / 物品</div>
+<div class="col-span-3">数量</div>
+<div class="col-span-2">金额</div>
+<div class="col-span-2">日期</div>
+<div class="col-span-1 text-right">操作</div>
+</div>
+<!-- Table Body -->
+<div class="flex-1 flex flex-col gap-2 mt-2">
+<!-- Row 1 -->
+<div class="grid grid-cols-12 gap-4 px-4 py-3 items-center rounded-xl hover:bg-surface-container-low transition-colors group border border-transparent hover:border-border-light/50">
+<div class="col-span-4 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" style="font-size: 18px;">set_meal</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-background">渴望原味猫粮</p>
+<p class="font-label-sm text-label-sm text-subtle-text">主粮购买</p>
+</div>
+</div>
+<div class="col-span-3 text-on-background font-body-md text-body-md">5.4 kg</div>
+<div class="col-span-2 text-on-background font-body-md text-body-md">¥680</div>
+<div class="col-span-2 text-subtle-text font-label-sm text-label-sm">06-15</div>
+<div class="col-span-1 flex justify-end">
+<button aria-label="Delete record" class="text-subtle-text hover:text-error opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-12 gap-4 px-4 py-3 items-center rounded-xl hover:bg-surface-container-low transition-colors group border border-transparent hover:border-border-light/50">
+<div class="col-span-4 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#fff0f0] flex items-center justify-center text-error">
+<span class="material-symbols-outlined" style="font-size: 18px;">vaccines</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-background">大宠爱内外同驱</p>
+<p class="font-label-sm text-label-sm text-subtle-text">驱虫用药</p>
+</div>
+</div>
+<div class="col-span-3 text-on-background font-body-md text-body-md">1 支</div>
+<div class="col-span-2 text-on-background font-body-md text-body-md">¥120</div>
+<div class="col-span-2 text-subtle-text font-label-sm text-label-sm">06-10</div>
+<div class="col-span-1 flex justify-end">
+<button aria-label="Delete record" class="text-subtle-text hover:text-error opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="grid grid-cols-12 gap-4 px-4 py-3 items-center rounded-xl hover:bg-surface-container-low transition-colors group border border-transparent hover:border-border-light/50">
+<div class="col-span-4 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" style="font-size: 18px;">cookie</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-background">冻干鹌鹑零食</p>
+<p class="font-label-sm text-label-sm text-subtle-text">零食购买</p>
+</div>
+</div>
+<div class="col-span-3 text-on-background font-body-md text-body-md">2 袋</div>
+<div class="col-span-2 text-on-background font-body-md text-body-md">¥85</div>
+<div class="col-span-2 text-subtle-text font-label-sm text-label-sm">06-02</div>
+<div class="col-span-1 flex justify-end">
+<button aria-label="Delete record" class="text-subtle-text hover:text-error opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Pagination placeholder -->
+<div class="mt-4 pt-4 border-t border-border-light flex justify-center">
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded flex items-center justify-center text-subtle-text hover:bg-surface-container disabled:opacity-50"><span class="material-symbols-outlined" style="font-size: 18px;">chevron_left</span></button>
+<button class="w-8 h-8 rounded flex items-center justify-center bg-primary-container/10 text-primary font-label-sm">1</button>
+<button class="w-8 h-8 rounded flex items-center justify-center text-subtle-text hover:bg-surface-container font-label-sm">2</button>
+<button class="w-8 h-8 rounded flex items-center justify-center text-subtle-text hover:bg-surface-container disabled:opacity-50"><span class="material-symbols-outlined" style="font-size: 18px;">chevron_right</span></button>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column (Sidebar widgets) -->
+<div class="col-span-4 flex flex-col gap-6">
+<!-- Section: Weight Trend Line Chart -->
+<section class="bg-white rounded-[22px] p-6 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] border border-border-light/50">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-md text-headline-md text-on-background">体重趋势</h2>
+<span class="text-subtle-text font-label-sm text-label-sm bg-surface-container-low px-2 py-1 rounded">近6个月</span>
+</div>
+<!-- Fake Line Chart using CSS/HTML -->
+<div class="h-40 w-full relative flex items-end justify-between pt-6 border-b border-border-light pb-2">
+<!-- Y-axis labels -->
+<div class="absolute left-0 top-0 h-full flex flex-col justify-between text-[10px] text-subtle-text pb-2">
+<span>6.0kg</span>
+<span>5.5kg</span>
+<span>5.0kg</span>
+</div>
+<!-- Grid lines -->
+<div class="absolute inset-0 border-b border-dashed border-border-light/50 top-1/2"></div>
+<!-- Data Points & Connecting lines (CSS approximation for visual only) -->
+<div class="ml-8 w-full h-full relative flex justify-between items-end">
+<!-- Line segment 1 -->
+<svg class="absolute inset-0 w-full h-full overflow-visible" preserveaspectratio="none">
+<path class="drop-shadow-md" d="M 10,120 L 60,110 L 110,80 L 160,85 L 210,60 L 260,50" fill="none" stroke="#e88f78" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+</svg>
+<!-- Points -->
+<div class="relative flex flex-col items-center group z-10" style="height: 120px;">
+<div class="w-3 h-3 rounded-full bg-white border-2 border-primary-container mt-auto"></div>
+<span class="absolute -bottom-6 text-[10px] text-subtle-text">1月</span>
+</div>
+<div class="relative flex flex-col items-center group z-10" style="height: 110px;">
+<div class="w-3 h-3 rounded-full bg-white border-2 border-primary-container mt-auto"></div>
+<span class="absolute -bottom-6 text-[10px] text-subtle-text">2月</span>
+</div>
+<div class="relative flex flex-col items-center group z-10" style="height: 80px;">
+<div class="w-3 h-3 rounded-full bg-white border-2 border-primary-container mt-auto"></div>
+<span class="absolute -bottom-6 text-[10px] text-subtle-text">3月</span>
+</div>
+<div class="relative flex flex-col items-center group z-10" style="height: 85px;">
+<div class="w-3 h-3 rounded-full bg-white border-2 border-primary-container mt-auto"></div>
+<span class="absolute -bottom-6 text-[10px] text-subtle-text">4月</span>
+</div>
+<div class="relative flex flex-col items-center group z-10" style="height: 60px;">
+<div class="w-3 h-3 rounded-full bg-white border-2 border-primary-container mt-auto"></div>
+<span class="absolute -bottom-6 text-[10px] text-subtle-text">5月</span>
+</div>
+<div class="relative flex flex-col items-center group z-10" style="height: 50px;">
+<!-- Hover Tooltip state -->
+<div class="absolute -top-8 bg-inverse-surface text-inverse-on-surface text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">5.8 kg</div>
+<div class="w-4 h-4 rounded-full bg-primary-container border-2 border-white mt-auto shadow-sm"></div>
+<span class="absolute -bottom-6 text-[10px] text-on-background font-bold">6月</span>
+</div>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text">当前体重</p>
+<p class="font-headline-md text-headline-md text-on-background">5.8<span class="text-sm font-normal text-subtle-text ml-1">kg</span></p>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-subtle-text">较上月</p>
+<p class="font-label-md text-label-md text-error flex items-center justify-end gap-0.5">
+<span class="material-symbols-outlined" style="font-size: 16px;">trending_up</span>
+                                    +0.2kg
+                                </p>
+</div>
+</div>
+</section>
+<!-- Section: Recent Weight Entries Sidebar -->
+<section class="bg-white rounded-[22px] p-6 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] border border-border-light/50 flex-1">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-label-md text-label-md text-on-background font-bold">近期称重记录</h3>
+<button class="text-primary hover:text-primary-container transition-colors text-sm font-medium">查看全部</button>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Entry 1 -->
+<div class="flex justify-between items-center p-3 rounded-xl bg-surface-container-lowest border border-border-light/50 hover:border-outline-variant transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-primary-container"></div>
+<div>
+<p class="font-body-md text-body-md text-on-background">5.8 kg</p>
+<p class="font-label-sm text-label-sm text-subtle-text">2026-06-01</p>
+</div>
+</div>
+<button aria-label="Delete entry" class="p-1.5 text-subtle-text hover:text-error hover:bg-[#fff0f0] rounded-md opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+</button>
+</div>
+<!-- Entry 2 -->
+<div class="flex justify-between items-center p-3 rounded-xl bg-surface-container-lowest border border-border-light/50 hover:border-outline-variant transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-border-light group-hover:bg-outline-variant transition-colors"></div>
+<div>
+<p class="font-body-md text-body-md text-on-background">5.6 kg</p>
+<p class="font-label-sm text-label-sm text-subtle-text">2026-05-15</p>
+</div>
+</div>
+<button aria-label="Delete entry" class="p-1.5 text-subtle-text hover:text-error hover:bg-[#fff0f0] rounded-md opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+</button>
+</div>
+<!-- Entry 3 -->
+<div class="flex justify-between items-center p-3 rounded-xl bg-surface-container-lowest border border-border-light/50 hover:border-outline-variant transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-border-light group-hover:bg-outline-variant transition-colors"></div>
+<div>
+<p class="font-body-md text-body-md text-on-background">5.5 kg</p>
+<p class="font-label-sm text-label-sm text-subtle-text">2026-04-20</p>
+</div>
+</div>
+<button aria-label="Delete entry" class="p-1.5 text-subtle-text hover:text-error hover:bg-[#fff0f0] rounded-md opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+</button>
+</div>
+<!-- Empty State Example (Hidden normally, shown for completeness) -->
+<!-- <div class="py-8 flex flex-col items-center justify-center text-center">
+                                <span class="material-symbols-outlined text-outline-variant mb-2" style="font-size: 32px;">monitor_weight</span>
+                                <p class="font-label-md text-label-md text-subtle-text mb-3">暂无近期记录</p>
+                                <button class="text-primary text-sm font-medium hover:underline">去添加</button>
+                            </div> -->
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>

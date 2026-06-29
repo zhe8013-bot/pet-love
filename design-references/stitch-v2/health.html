@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PetPlanet - Health Records</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#fff7fe",
+                      "tertiary-fixed-dim": "#edc068",
+                      "tertiary-container": "#caa04b",
+                      "on-primary-container": "#672818",
+                      "on-primary-fixed": "#3b0900",
+                      "on-primary": "#ffffff",
+                      "on-primary-fixed-variant": "#753322",
+                      "on-surface": "#201926",
+                      "outline": "#87736e",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "primary": "#924a37",
+                      "primary-fixed-dim": "#ffb4a1",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-container": "#4f3800",
+                      "primary-container": "#e88f78",
+                      "surface-dim": "#e3d6e8",
+                      "surface-container-high": "#f1e4f7",
+                      "subtle-text": "#756B7D",
+                      "inverse-on-surface": "#faecff",
+                      "secondary-fixed": "#e8deff",
+                      "secondary-fixed-dim": "#cdbdff",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#4e3d86",
+                      "surface-tint": "#924a37",
+                      "background": "#FFF9F3",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#ebdef1",
+                      "surface-container-low": "#fcf0ff",
+                      "surface-variant": "#ebdef1",
+                      "border-light": "#E8E2DA",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container": "#f7e9fc",
+                      "inverse-surface": "#352d3b",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#5d4200",
+                      "on-background": "#201926",
+                      "tertiary": "#7a5904",
+                      "on-secondary-fixed-variant": "#4c3a84",
+                      "on-secondary-fixed": "#1f0756",
+                      "deep-plum": "#2E223D",
+                      "surface": "#fff7fe",
+                      "secondary-container": "#c0adff",
+                      "on-tertiary-fixed": "#261900",
+                      "tertiary-fixed": "#ffdea4",
+                      "primary-fixed": "#ffdbd2",
+                      "outline-variant": "#d9c1bb",
+                      "secondary": "#64529d",
+                      "on-surface-variant": "#54433f",
+                      "inverse-primary": "#ffb4a1"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "40px",
+                      "section-gap": "64px",
+                      "gutter": "24px",
+                      "margin-mobile": "20px",
+                      "element-gap": "16px"
+              },
+              "fontFamily": {
+                      "label-sm": [
+                              "beVietnamPro"
+                      ],
+                      "display-lg": [
+                              "beVietnamPro"
+                      ],
+                      "body-lg": [
+                              "beVietnamPro"
+                      ],
+                      "headline-md": [
+                              "beVietnamPro"
+                      ],
+                      "body-md": [
+                              "beVietnamPro"
+                      ],
+                      "headline-lg-mobile": [
+                              "beVietnamPro"
+                      ],
+                      "headline-lg": [
+                              "beVietnamPro"
+                      ],
+                      "label-md": [
+                              "beVietnamPro"
+                      ]
+              },
+              "fontSize": {
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+      </style>
+</head>
+<body class="bg-background min-h-screen text-on-background flex antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Shared Component) -->
+<aside class="bg-background dark:bg-deep-plum h-screen w-64 fixed left-0 top-0 border-r border-border-light dark:border-outline-variant flex flex-col h-full py-10 px-6 z-20">
+<div class="mb-12 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xl overflow-hidden">
+<img alt="User profile picture" class="w-full h-full object-cover" data-alt="A warm, stylized logo icon for PetPlanet, featuring a minimalist paw print inside a lantern shape, soft peach and plum colors, clean vector style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0eXje7g4M2xJHv1ZdbaYqcFQREiIPNRYN6iKG9T4SzP7ZoNfvxCY9mXY2D4G6rf0jZtYNrph2TSDI0lhC5e9BKXx8mLNktAzGkhpqDR6uDUSRUwL20QhUKpF9hcB8LYxoHrYHUdbMHKbtkIxPcaXXiiT-SeEeG1NN6NnTapiZFxjNSsF7Ik1TXmZFEhDqGDYb9-sjyauJJDO-XpvGrPBLD52o6lGzKkA_bDHA4gSLJHil_vx6l0k-KYCQTMGEH5wZ01TD2U9ufCM"/>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">PetPlanet</h1>
+<p class="font-label-sm text-label-sm text-subtle-text">Warm Lantern Garden</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<!-- Home -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-surface-container dark:hover:bg-surface-variant transition-colors duration-200 active:scale-95 transition-transform group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<!-- Pet Profiles -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-surface-container dark:hover:bg-surface-variant transition-colors duration-200 active:scale-95 transition-transform group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">pets</span>
+<span class="font-label-md text-label-md">Pet Profiles</span>
+</a>
+<!-- Health Records (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary dark:text-primary-fixed-dim font-bold border-r-4 border-primary dark:border-primary-fixed-dim bg-surface-container/50 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+<span class="font-label-md text-label-md">Health Records</span>
+</a>
+<!-- Life Logs -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-surface-container dark:hover:bg-surface-variant transition-colors duration-200 active:scale-95 transition-transform group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">auto_stories</span>
+<span class="font-label-md text-label-md">Life Logs</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-border-light">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen relative overflow-hidden">
+<!-- Top App Bar equivalent logic (though prompt asked for sidebar + main content, top area needs structure) -->
+<header class="w-full px-margin-desktop py-8 flex flex-col gap-6 relative z-10">
+<!-- Breadcrumb / Pet Switcher Row -->
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-4">
+<!-- Pet Switcher -->
+<div class="flex items-center gap-3 bg-surface rounded-full py-1.5 pl-1.5 pr-4 border border-border-light shadow-sm cursor-pointer hover:bg-surface-container transition-colors">
+<img alt="豆包" class="w-8 h-8 rounded-full object-cover border border-border-light" data-alt="A portrait of a cute Golden Retriever puppy named Doubao, soft natural lighting, warm colors, clean white background, friendly expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF9J_Kcq1XMcj8HTy4KfPWJ2ArXl0Fysd6NCP-qlf9rDDJax8vdugzNbaZVZ3wF8L6QX51NauCCRlMVni1Fsqhj3GQMJSTijPgla8BP8ONlK_wZ32fHYfCGrwpFv8uz0b8eRPD99sRZ-3evrh8AKcoivOo9moGR4hmVeMeFM81QWUe1wYoaeJD56UjYc7L7_MKllQmfX4mK-vfBvRwvkoi35JpXV5mPM4_u6weYIzof2BHJ11A1cIHtJ_YCVSn8De3EZ8mpMMGAEM"/>
+<span class="font-label-md text-label-md font-bold text-on-surface">豆包</span>
+<span class="material-symbols-outlined text-[16px] text-subtle-text">expand_more</span>
+</div>
+</div>
+<!-- Global Actions -->
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors focus:ring-2 focus:ring-primary/20">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center h-12 px-6 bg-primary-container text-on-primary-container rounded-[14px] font-label-md text-label-md font-bold hover:bg-primary hover:text-white transition-colors duration-200 shadow-sm">
+<span class="material-symbols-outlined mr-2 text-[18px]">add</span>
+                        新增病历
+                    </button>
+</div>
+</div>
+<!-- Page Title & Banner -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mt-4">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-background mb-2">健康档案</h2>
+<p class="font-body-lg text-body-lg text-subtle-text">记录每一次细心呵护</p>
+</div>
+<!-- Reminder Banner -->
+<div class="bg-surface-bright border border-tertiary-fixed-dim/30 rounded-xl p-4 flex items-center gap-4 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] w-full md:w-auto">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_clock</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider mb-1">下一次复诊提醒</p>
+<p class="font-body-md text-body-md text-on-surface font-medium">
+<span class="font-bold">豆包:</span> 2026-06-15, 距离复诊还有 <span class="text-error font-bold">26</span> 天
+                        </p>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="px-margin-desktop flex-1 pb-16">
+<!-- Toolbar -->
+<div class="bg-surface rounded-2xl p-4 border border-border-light shadow-[0_4px_20px_-4px_rgba(46,34,61,0.02)] mb-8 flex flex-col lg:flex-row gap-4 justify-between items-center z-10 relative">
+<div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+<!-- Search -->
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-subtle-text text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-background border border-border-light rounded-[12px] font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-on-surface placeholder:text-subtle-text" placeholder="搜索症状、医院..." type="text"/>
+</div>
+<!-- Date Picker (Simulated) -->
+<button class="flex items-center gap-2 px-4 py-2.5 bg-background border border-border-light rounded-[12px] font-body-md text-body-md text-on-surface hover:bg-surface-container transition-colors w-full sm:w-auto whitespace-nowrap">
+<span class="material-symbols-outlined text-[20px] text-subtle-text">calendar_month</span>
+                        最近三个月
+                        <span class="material-symbols-outlined text-[18px] text-subtle-text ml-auto sm:ml-2">arrow_drop_down</span>
+</button>
+</div>
+<!-- Filters & Counter -->
+<div class="flex flex-col sm:flex-row items-center gap-6 w-full lg:w-auto justify-between lg:justify-end">
+<div class="flex gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 scrollbar-hide">
+<button class="px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md whitespace-nowrap transition-colors">全部</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container border border-border-light text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant whitespace-nowrap transition-colors">治疗中</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container border border-border-light text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant whitespace-nowrap transition-colors">待复诊</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container border border-border-light text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant whitespace-nowrap transition-colors">已恢复</button>
+</div>
+<div class="font-label-sm text-label-sm text-subtle-text whitespace-nowrap shrink-0">
+                        结果共 <span class="font-bold text-on-surface">2</span> 条
+                    </div>
+</div>
+</div>
+<!-- Health Records Timeline List -->
+<div class="relative w-full max-w-5xl mx-auto pl-4 md:pl-0">
+<!-- Timeline vertical line -->
+<div class="absolute left-[19px] md:left-[140px] top-4 bottom-0 w-[2px] bg-border-light -z-10"></div>
+<div class="flex flex-col gap-10">
+<!-- Record 1 (Active/Ongoing) -->
+<div class="flex flex-col md:flex-row gap-6 md:gap-12 relative group">
+<!-- Date Column -->
+<div class="w-32 shrink-0 md:text-right pt-2 flex md:block items-center gap-4 bg-background md:bg-transparent">
+<!-- Timeline Dot (Mobile inline, Desktop absolute over line) -->
+<div class="md:absolute md:left-[132px] md:top-4 w-[16px] h-[16px] rounded-full bg-primary-container border-4 border-background shadow-sm z-10 shrink-0"></div>
+<span class="font-headline-md text-headline-md font-bold text-on-surface block">05-20</span>
+<span class="font-label-sm text-label-sm text-subtle-text block">2024</span>
+</div>
+<!-- Content Card -->
+<div class="flex-1 bg-surface-lowest rounded-[22px] border border-border-light p-6 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(46,34,61,0.08)] transition-all bg-white relative overflow-hidden">
+<!-- Top right status chip -->
+<div class="absolute top-6 right-6 px-3 py-1 bg-tertiary-fixed/40 text-tertiary font-label-sm text-label-sm rounded-full border border-tertiary/20 flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></div>
+                                治疗中
+                            </div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-4 pr-24">季节性过敏</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 mb-6">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-subtle-text text-[20px] shrink-0 mt-0.5">sick</span>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-0.5">症状</p>
+<p class="font-body-md text-body-md text-on-surface">腹部和四肢内侧出现红疹，频繁抓挠</p>
+</div>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-subtle-text text-[20px] shrink-0 mt-0.5">local_hospital</span>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-0.5">就诊医院</p>
+<p class="font-body-md text-body-md text-on-surface">瑞鹏宠物医院 (朝阳店)</p>
+</div>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-subtle-text text-[20px] shrink-0 mt-0.5">payments</span>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-0.5">费用</p>
+<p class="font-body-md text-body-md text-on-surface">¥280.00</p>
+</div>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-subtle-text text-[20px] shrink-0 mt-0.5">event</span>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-0.5">下次复诊</p>
+<p class="font-body-md text-body-md text-primary font-medium">2024-06-15</p>
+</div>
+</div>
+</div>
+<div class="mb-6 flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<img alt="Symptom photo" class="h-24 w-32 object-cover rounded-lg border border-border-light shrink-0" data-alt="A close up photo of a golden retriever dog's belly showing some red rash spots, clinical lighting, soft focus background, veterinary record style." src="https://lh3.googleusercontent.com/aida/AP1WRLt-17blAtwXMC-Ri7l3FJMQcmD953RfwIGM5TfwMEMGWtfIchFkx6Vg39HCiFIvhunRVsdMs77ANqVXLzNqXvzi43gmUEHsNKYFc9UwEPnVyfw9e4Ge3NsbKjXrL0XqUP_Murl88cQnHweAd_bm5gQMxb5UGELC7UX9vZaqS96tOSoeUuSprwqnRfj5Q8WoYyl3h8x2CGlNN2RuF5BxIHfgXIICRTg_y-xOD1nvvJPKSzOpqtxn6xZebw"/>
+</div>
+<div class="pt-4 border-t border-border-light flex justify-end gap-3">
+<button class="px-4 py-2 font-label-md text-label-md text-error hover:bg-error-container/50 rounded-lg transition-colors">删除</button>
+<button class="px-4 py-2 bg-surface-container text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-variant transition-colors border border-border-light">查看详情</button>
+</div>
+</div>
+</div>
+<!-- Record 2 (Completed) -->
+<div class="flex flex-col md:flex-row gap-6 md:gap-12 relative group">
+<!-- Date Column -->
+<div class="w-32 shrink-0 md:text-right pt-2 flex md:block items-center gap-4 bg-background md:bg-transparent">
+<!-- Timeline Dot -->
+<div class="md:absolute md:left-[132px] md:top-4 w-[16px] h-[16px] rounded-full bg-surface-variant border-4 border-background shadow-sm z-10 shrink-0"></div>
+<span class="font-headline-md text-headline-md font-bold text-on-surface/60 block">11-05</span>
+<span class="font-label-sm text-label-sm text-subtle-text block">2023</span>
+</div>
+<!-- Content Card -->
+<div class="flex-1 bg-surface-lowest rounded-[22px] border border-border-light p-6 shadow-[0_4px_20px_-4px_rgba(46,34,61,0.02)] hover:shadow-[0_8px_30px_-4px_rgba(46,34,61,0.05)] transition-all bg-white relative opacity-80 hover:opacity-100">
+<!-- Top right status chip -->
+<div class="absolute top-6 right-6 px-3 py-1 bg-surface-variant/50 text-subtle-text font-label-sm text-label-sm rounded-full border border-border-light flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                已完成
+                            </div>
+<h3 class="font-headline-md text-headline-md text-on-background/80 mb-4 pr-24">年度常规体检</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 mb-6">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-subtle-text/70 text-[20px] shrink-0 mt-0.5">monitor_heart</span>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-0.5">结果</p>
+<p class="font-body-md text-body-md text-on-surface">各项指标正常</p>
+</div>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-subtle-text/70 text-[20px] shrink-0 mt-0.5">local_hospital</span>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-0.5">就诊医院</p>
+<p class="font-body-md text-body-md text-on-surface">安安宠医</p>
+</div>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-subtle-text/70 text-[20px] shrink-0 mt-0.5">payments</span>
+<div>
+<p class="font-label-sm text-label-sm text-subtle-text mb-0.5">费用</p>
+<p class="font-body-md text-body-md text-on-surface">¥1200.00</p>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-border-light flex justify-end gap-3">
+<button class="px-4 py-2 font-label-md text-label-md text-error/70 hover:bg-error-container/50 rounded-lg transition-colors">删除</button>
+<button class="px-4 py-2 bg-transparent text-primary font-label-md text-label-md rounded-lg hover:bg-primary-container/20 transition-colors border border-primary/30">查看报告</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Placeholder (Hidden by default, shown here for structure as requested) -->
+<div class="hidden flex flex-col items-center justify-center py-20 px-4 text-center mt-8">
+<div class="w-48 h-48 mb-6 opacity-80 mix-blend-multiply">
+<img alt="No records illustration" class="w-full h-full object-contain" data-alt="A soft, watercolor style illustration of a sleepy dog resting next to a blank clipboard, warm neutral colors, minimal and clean, conveying a sense of 'no records found'." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgTDJNXZ4Mmj_35ClC4Qk3Oiekeru6k21leeJ42Fpg9EVi3nmHQFHUPQ5ZiOZ7rl43OlkvQ2L4GuE-RoO6vqqznlIX5Q14M5DLY99ZLgZtZjuIz7NhGjli4id4lK_7sd5Ej_UH68GfJM_iuU6bdGoOBvU8uZLRHxWTM6lB7cTsL1WOi2adXMPzF_xMZsodg6ExhvUiUHwSEIlIB74mtPc5OJJWR8gwk8FLQTlPMadQ-IrimCJQWXRnxd-cqc5lPJw7jZvUD9hPz_A"/>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-background mb-2">暂无符合条件的病历</h4>
+<p class="font-body-md text-body-md text-subtle-text mb-8 max-w-md">尝试调整搜索词或筛选条件，或者点击上方“新增病历”来记录新的健康数据。</p>
+<button class="px-6 py-3 bg-surface-container text-on-surface font-label-md text-label-md font-bold rounded-[14px] hover:bg-surface-variant transition-colors border border-border-light shadow-sm">
+                    重置筛选
+                </button>
+</div>
+</div>
+</main>
+</body></html>
