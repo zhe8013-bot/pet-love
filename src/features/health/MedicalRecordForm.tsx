@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { FormField, TextAreaField } from '../../components/FormField'
 import { Modal } from '../../components/Modal'
 import { usePetData } from '../../data/PetDataProvider'
-import { filesToDataUrls } from '../../lib/files'
 
 const schema = z.object({
   visitDate: z.string().min(1, '请选择就诊日期'),
@@ -15,6 +14,7 @@ const schema = z.object({
 export function MedicalRecordForm({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
   const { currentPetId, repository } = usePetData()
   const [error, setError] = useState('')
+  const [pending, setPending] = useState(false)
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -30,19 +30,28 @@ export function MedicalRecordForm({ onClose, onSaved }: { onClose: () => void; o
       setError(validation.error.issues[0]?.message ?? '请检查填写内容')
       return
     }
-    const photos = await filesToDataUrls((form.getAll('photos') as File[]).filter((file) => file.size > 0))
-    await repository.addMedicalRecord({
-      petId: currentPetId,
-      ...validation.data,
-      medication: String(form.get('medication') ?? ''),
-      clinic: String(form.get('clinic') ?? ''),
-      cost: Number(form.get('cost') || 0),
-      followUpDate: String(form.get('followUpDate') ?? ''),
-      photos,
-      status: form.get('followUpDate') ? 'follow-up' : 'ongoing',
-    })
-    onSaved()
-    onClose()
+    setPending(true)
+    setError('')
+    try {
+      const files = (form.getAll('photos') as File[]).filter((file) => file.size > 0)
+      const photos = files.length > 0 ? await repository.uploadAssets(files, currentPetId, 'medical') : []
+      await repository.addMedicalRecord({
+        petId: currentPetId,
+        ...validation.data,
+        medication: String(form.get('medication') ?? ''),
+        clinic: String(form.get('clinic') ?? ''),
+        cost: Number(form.get('cost') || 0),
+        followUpDate: String(form.get('followUpDate') ?? ''),
+        photos,
+        status: form.get('followUpDate') ? 'follow-up' : 'ongoing',
+      })
+      onSaved()
+      onClose()
+    } catch {
+      setError('病历没有保存成功，请检查图片或稍后重试。')
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -63,8 +72,8 @@ export function MedicalRecordForm({ onClose, onSaved }: { onClose: () => void; o
         </div>
         {error && <p className="form-error" role="alert">{error}</p>}
         <footer className="form-actions">
-          <button type="button" className="button ghost" onClick={onClose}>取消</button>
-          <button className="button primary" type="submit">保存病历</button>
+          <button type="button" className="button ghost" onClick={onClose} disabled={pending}>取消</button>
+          <button className="button primary" type="submit" disabled={pending}>{pending ? '正在保存…' : '保存病历'}</button>
         </footer>
       </form>
     </Modal>

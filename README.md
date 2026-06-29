@@ -1,10 +1,10 @@
 # PetPlanet
 
-PetPlanet 是一个面向多宠家庭的温暖生活记录应用，包含宠物角色卡、健康档案、月度消耗与体重趋势，以及可切换成长回顾模式的 3D 照片记忆星河。
+PetPlanet 是一个面向多宠家庭的温暖生活记录应用，当前包含首页照护面板、宠物档案、健康病历、月度消耗与体重趋势。
 
 ## 当前范围
 
-本分支交付完整前端原型：React、TypeScript、Vite、React Three Fiber 与本地 mock 数据仓库。后端不在本分支实现，接口契约与接入边界见 [Claude 后端交接说明](docs/backend-handoff.md)。
+本分支专注可用的非 3D 前端：React、TypeScript、Vite、真实表单与本地 mock 数据仓库。记忆/3D 模块不在当前导航和构建入口中，待后续方向确认后再接入。仓库中已有 Express + SQLite 基础后端，后续后端工作边界见 [Claude 后端交接说明](docs/backend-handoff.md)。
 
 ## 本地运行
 

@@ -14,6 +14,7 @@ const schema = z.object({
 export function ConsumptionForm({ month, onClose, onSaved }: { month: string; onClose: () => void; onSaved: () => void }) {
   const { currentPetId, repository } = usePetData()
   const [error, setError] = useState('')
+  const [pending, setPending] = useState(false)
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -28,9 +29,17 @@ export function ConsumptionForm({ month, onClose, onSaved }: { month: string; on
       setError(result.error.issues[0]?.message ?? '请检查填写内容')
       return
     }
-    await repository.addConsumption({ petId: currentPetId, month, ...result.data })
-    onSaved()
-    onClose()
+    setPending(true)
+    setError('')
+    try {
+      await repository.addConsumption({ petId: currentPetId, month, ...result.data })
+      onSaved()
+      onClose()
+    } catch {
+      setError('这条消耗没有保存成功，请稍后重试。')
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -44,8 +53,8 @@ export function ConsumptionForm({ month, onClose, onSaved }: { month: string; on
         </div>
         {error && <p className="form-error" role="alert">{error}</p>}
         <footer className="form-actions">
-          <button type="button" className="button ghost" onClick={onClose}>取消</button>
-          <button className="button primary" type="submit">保存记录</button>
+          <button type="button" className="button ghost" onClick={onClose} disabled={pending}>取消</button>
+          <button className="button primary" type="submit" disabled={pending}>{pending ? '正在保存…' : '保存记录'}</button>
         </footer>
       </form>
     </Modal>

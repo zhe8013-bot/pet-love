@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PetPlanet - 首页</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=beVietnamPro:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#261900",
+                        "inverse-surface": "#352d3b",
+                        "on-surface": "#201926",
+                        "primary-fixed": "#ffdbd2",
+                        "tertiary-fixed": "#ffdea4",
+                        "on-secondary-fixed-variant": "#4c3a84",
+                        "tertiary-fixed-dim": "#edc068",
+                        "on-secondary-fixed": "#1f0756",
+                        "surface-tint": "#924a37",
+                        "on-primary-container": "#672818",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "surface-bright": "#fff7fe",
+                        "surface-container-highest": "#ebdef1",
+                        "surface-container-high": "#f1e4f7",
+                        "primary": "#924a37",
+                        "subtle-text": "#756B7D",
+                        "surface-dim": "#e3d6e8",
+                        "deep-plum": "#2E223D",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#54433f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#7a5904",
+                        "outline-variant": "#d9c1bb",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#ffb4a1",
+                        "surface-variant": "#ebdef1",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "on-secondary-container": "#4e3d86",
+                        "background": "#FFF9F3",
+                        "on-primary-fixed": "#3b0900",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#fcf0ff",
+                        "surface": "#fff7fe",
+                        "inverse-on-surface": "#faecff",
+                        "surface-container": "#f7e9fc",
+                        "on-primary-fixed-variant": "#753322",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#e88f78",
+                        "on-tertiary-container": "#4f3800",
+                        "border-light": "#E8E2DA",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#ffb4a1",
+                        "secondary-container": "#c0adff",
+                        "on-background": "#201926",
+                        "secondary": "#64529d",
+                        "outline": "#87736e",
+                        "tertiary-container": "#caa04b",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#e8deff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "14px",
+                        "3xl": "22px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "section-gap": "64px",
+                        "element-gap": "16px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["beVietnamPro"],
+                        "headline-md": ["beVietnamPro"],
+                        "display-lg": ["beVietnamPro"],
+                        "label-md": ["beVietnamPro"],
+                        "headline-lg-mobile": ["beVietnamPro"],
+                        "headline-lg": ["beVietnamPro"],
+                        "body-lg": ["beVietnamPro"],
+                        "body-md": ["beVietnamPro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .soft-shadow { box-shadow: 0 4px 20px -4px rgba(46, 34, 61, 0.05); }
+    </style>
+</head>
+<body class="antialiased font-body-md pb-24 md:pb-0 mx-auto max-w-[390px] md:max-w-full md:bg-surface-container-low min-h-screen">
+<!-- Top App Bar (Mobile Nav Component Translation) -->
+<header class="flex justify-between items-center w-full px-margin-mobile h-16 bg-surface dark:bg-surface-dim shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] sticky top-0 z-40 md:hidden">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-border-light">
+<img alt="Pet owner profile" class="w-full h-full object-cover" data-alt="A small, circular avatar portrait of a modern, stylish pet owner standing outdoors in soft daylight. The image has a warm, inviting tone with creamy whites and soft peach highlights, reflecting a premium, editorial lifestyle aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqO3tVp9YiXjXAdzJoNqWyTEInaFF72nYwSaCHQJ4T8XSyNyAMnhFYU60neYcqEicGLcAKzZTuadF-2LeCi2SpNLX2Drlayzy75grpP3ISbVGDCSXW-zaVeB7D6hAX3xebhp599cW6R8ZiHvFVkYV_0mwsbzJIu0mC6Aa7D8ZtIc1zZUiHTzPVTRmwVwx1XqO0z0GKYV9L_Phx4Cf1l-yEcLU3_ctcBPfH5xBk-jmrT1dU--JnLPO9wri5SZFgL8wrCzGiNyDCfEo"/>
+</div>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">PetPlanet</span>
+</div>
+<button class="text-primary dark:text-primary-fixed-dim w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors active:scale-95 duration-100">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</header>
+<!-- Desktop Top App Bar (Hidden on Mobile) -->
+<header class="hidden md:flex justify-between items-center w-full px-margin-desktop h-20 bg-surface dark:bg-surface-dim shadow-[0_4px_20px_-4px_rgba(46,34,61,0.05)] sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">PetPlanet</span>
+</div>
+<nav class="flex gap-6">
+<a class="text-primary dark:text-primary-fixed-dim font-label-md text-label-md font-bold" href="#">首页</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">健康档案</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">生活记录</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">记忆星河</a>
+</nav>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:bg-surface-container rounded-full p-2 transition-colors">settings</span>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-border-light cursor-pointer">
+<img alt="Pet owner profile" class="w-full h-full object-cover" data-alt="A small, circular avatar portrait of a modern, stylish pet owner standing outdoors in soft daylight. The image has a warm, inviting tone with creamy whites and soft peach highlights, reflecting a premium, editorial lifestyle aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDllmmiOB4E5wG8_85ylznaeZtwGnF6Fbb_KRBB9s7130ZRF8HdI8SVm7BKG28L3_TF6vfTTtFkvQ_W3lFEIFaQ-b4Y2qlinSDMS6mmOpl7D_gmE45c0fIhODvfhouiOWPWVFdGP_RQa3cBWr9dlh414yEyIIbMsFVNVdGCbdCQFofljo-gSz-yT0hDpIsOVsmFd-OITipX53srY7u6Bx29ZSqRc5jiXthMlYbE0R2yw7OukZ6NGlI-hD26TMw7_x9fq2qj-PfjJz4"/>
+</div>
+</div>
+</header>
+<main class="md:grid md:grid-cols-12 md:gap-gutter md:px-margin-desktop md:py-12 md:max-w-7xl md:mx-auto">
+<!-- Mobile Centric Layout Wrapper -->
+<div class="md:col-span-8 md:col-start-3 flex flex-col gap-8 w-full md:bg-surface md:p-8 md:rounded-3xl md:soft-shadow">
+<!-- Welcome Text -->
+<section class="px-margin-mobile pt-6 md:px-0 md:pt-0">
+<h1 class="font-body-lg text-subtle-text text-lg">下午好，这里的每一刻都值得温柔以待</h1>
+</section>
+<!-- Pet Switcher -->
+<section class="px-margin-mobile md:px-0 flex items-center gap-3 overflow-x-auto hide-scrollbar">
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-full font-label-md whitespace-nowrap active:scale-95 transition-transform shadow-sm">豆包 (Doubao)</button>
+<button class="px-4 py-2 border border-border-light text-subtle-text rounded-full font-label-md whitespace-nowrap hover:bg-surface-container transition-colors">米粒 (Mili)</button>
+<button class="px-4 py-2 border border-border-light text-subtle-text rounded-full font-label-md whitespace-nowrap hover:bg-surface-container transition-colors">糖糖 (Tangtang)</button>
+<button class="w-10 h-10 min-w-[40px] flex items-center justify-center border border-border-light text-primary rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">add</span>
+</button>
+</section>
+<!-- Hero: Pet Profiles (Horizontal Scroll) -->
+<section class="pl-margin-mobile md:pl-0 flex gap-4 overflow-x-auto hide-scrollbar pb-4 snap-x">
+<div class="min-w-[280px] h-[320px] rounded-3xl overflow-hidden relative soft-shadow snap-center shrink-0 border border-border-light">
+<img alt="Doubao the Golden Retriever" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLu7EqiPppok-mCavBBY_iyynAq0KZ1eTyjzGAYL-LiraoswLJ0yO3QksjvCVi0Hb5pHJ2dHK98WkTlaQrT6UNcUGb7JUW5lBYevEGTFxkH5AmHlasWRebrdzZiHmHNbvnOfPXJe5Cj4ltKNlrdgMQoOWb6xT2jEHIduw_9ED51n33i8GKXOqnq7XD5AEeeIpf4S5aevJ4mXI0J14XQ9nOvCa73hOQlEGujP8yc08j8KGLfIHlEoY03U2j0"/>
+<div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-deep-plum/80 to-transparent">
+<h2 class="text-surface font-headline-md font-semibold">豆包</h2>
+<p class="text-surface-dim font-label-md">Golden Retriever · 3 Years</p>
+</div>
+</div>
+<div class="min-w-[280px] h-[320px] rounded-3xl overflow-hidden relative soft-shadow snap-center shrink-0 border border-border-light">
+<img alt="Mili the Orange Tabby Cat" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLsRW8wo0XX-oIIHrynfc0jPRWcDiKa14yvBk81OLY67_2ddhrzLnMaSNoAZXHeF6eazj7lIEZkB88ZaZSQwcWVXTqUCc9C4wcT9eWTzCGhlckoOv7GUcPMlEdSxqjySpkDoZcLKRxhNOk14G_l17w6Yj9L5C_HIxA0PcNymxp9WWuRHq4bx8d4wrXjjGK0apYVJerWMV8vcjzkvC2A64psXCfF-c0b2WXlHX-msaQiAHkUXzsth4NzQ0l8"/>
+<div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-deep-plum/80 to-transparent">
+<h2 class="text-surface font-headline-md font-semibold">米粒</h2>
+<p class="text-surface-dim font-label-md">Orange Tabby · 1 Year</p>
+</div>
+</div>
+<div class="min-w-[280px] h-[320px] rounded-3xl overflow-hidden relative soft-shadow snap-center shrink-0 border border-border-light mr-margin-mobile md:mr-0">
+<img alt="Tangtang the Border Collie" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtNHDUqYLTPkRq7RH6JCRXVhxu6qDL_Ci9NJO5qrSRFCXnfjc4hdeu_8uR3ELCJUkQRsFzQp0eZn-J-m8G74SpyJbfHQu28YRe63ZfhsM63xpDRysft_g0GCykkXzu8UC5fdJ9thaizk5kmLgoz9ha_c5qxE_AYY8nPZeH6wRcSo7BhVTmNLRLISDX2-jsLXzY_i4oCe5PO2pb5fMJUXL3r60eE-5ntVW0WC1H_sxSqbQJbXeqTXDljEQ"/>
+<div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-deep-plum/80 to-transparent">
+<h2 class="text-surface font-headline-md font-semibold">糖糖</h2>
+<p class="text-surface-dim font-label-md">Border Collie · 2 Years</p>
+</div>
+</div>
+</section>
+<!-- Section 1: Today's Tasks -->
+<section class="px-margin-mobile md:px-0 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-deep-plum">今日待办</h3>
+<span class="text-primary font-label-md cursor-pointer hover:underline">查看全部</span>
+</div>
+<div class="bg-surface rounded-3xl p-5 soft-shadow border border-border-light flex flex-col gap-5">
+<!-- Task 1 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">medication</span>
+</div>
+<div>
+<h4 class="font-label-md text-on-surface font-semibold text-base">体内驱虫</h4>
+<p class="font-label-sm text-subtle-text">建议今日完成</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="h-11 px-4 rounded-2xl border border-secondary text-secondary font-label-md hover:bg-surface-container transition-colors">稍后</button>
+<button class="h-11 px-4 rounded-2xl bg-primary-container text-on-primary-container font-label-md font-semibold hover:opacity-90 transition-opacity">完成</button>
+</div>
+</div>
+<hr class="border-border-light"/>
+<!-- Task 2 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">vaccines</span>
+</div>
+<div>
+<h4 class="font-label-md text-on-surface font-semibold text-base">年度疫苗接种</h4>
+<p class="font-label-sm text-subtle-text">预约提醒</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="h-11 px-4 rounded-2xl border border-secondary text-secondary font-label-md hover:bg-surface-container transition-colors">稍后</button>
+<button class="h-11 px-4 rounded-2xl bg-primary-container text-on-primary-container font-label-md font-semibold hover:opacity-90 transition-opacity">完成</button>
+</div>
+</div>
+<hr class="border-border-light"/>
+<!-- Task 3 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">content_cut</span>
+</div>
+<div>
+<h4 class="font-label-md text-on-surface font-semibold text-base">洗澡美容</h4>
+<p class="font-label-sm text-subtle-text">距上次21天</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="h-11 px-4 rounded-2xl border border-secondary text-secondary font-label-md hover:bg-surface-container transition-colors">稍后</button>
+<button class="h-11 px-4 rounded-2xl bg-primary-container text-on-primary-container font-label-md font-semibold hover:opacity-90 transition-opacity">完成</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Vertical Stack -->
+<section class="px-margin-mobile md:px-0 flex flex-col gap-6">
+<!-- Weight Trend -->
+<div>
+<h3 class="font-headline-md text-headline-md text-deep-plum mb-3">体重趋势</h3>
+<div class="bg-surface rounded-3xl p-5 soft-shadow border border-border-light flex flex-col items-center justify-center h-48 relative overflow-hidden">
+<!-- Simulated Chart Background -->
+<div class="absolute inset-0 bg-cover bg-center opacity-30" data-alt="A clean, abstract vector illustration of a line chart showing a gradual upward trend, designed in a soft minimalist style. The chart line is a gentle peach coral color against a creamy white background, with faint lavender grid lines. Warm, soothing, corporate modern aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBT4w88HBjYtPBMDh1Ig7wZoX5v_c-Gn8gf8cMaOhH7A8MG-G0AVduYUruoHDacR-K519UNKIC9nTH_jbrlGuEz-wjcm-GxFgimPqF14eJc6HYq-JJdX1QToDnlfqynl3VMItj64MANpAYtQRgyzmL8LEH7C78aaIa3d23tdSAVcyjpe8toE1GI70eR3XDFfBr4Gxv-N0G7hRuz4BTRFeMqOBy-9tq1K8xGbinHtaZsC8IPbB0WwHHFBvVdbHnbecXrEBg_sNG4nJI')"></div>
+<div class="z-10 text-center">
+<span class="text-4xl font-display-lg text-primary">28.5 <span class="text-lg font-body-md text-subtle-text">kg</span></span>
+<p class="font-label-md text-secondary mt-1 flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                                本月增重 0.5kg
+                            </p>
+</div>
+</div>
+</div>
+<!-- Consumption Summary -->
+<div>
+<h3 class="font-headline-md text-headline-md text-deep-plum mb-3">消耗汇总</h3>
+<div class="bg-surface rounded-3xl p-5 soft-shadow border border-border-light flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">set_meal</span>
+</div>
+<span class="font-body-md text-on-surface">高级幼犬粮 (Premium Kibble)</span>
+</div>
+<span class="font-label-md font-bold text-deep-plum">剩余 2.5kg</span>
+</div>
+<!-- Progress bar -->
+<div class="w-full bg-surface-container-highest rounded-full h-2">
+<div class="bg-primary-container h-2 rounded-full" style="width: 30%"></div>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">cookie</span>
+</div>
+<span class="font-body-md text-on-surface">冻干零食 (Treats)</span>
+</div>
+<span class="font-label-md font-bold text-deep-plum">充足</span>
+</div>
+<!-- Progress bar -->
+<div class="w-full bg-surface-container-highest rounded-full h-2">
+<div class="bg-secondary-container h-2 rounded-full" style="width: 75%"></div>
+</div>
+</div>
+</div>
+<!-- Recent Health Summary -->
+<div>
+<h3 class="font-headline-md text-headline-md text-deep-plum mb-3">最近健康</h3>
+<div class="bg-surface rounded-3xl p-5 soft-shadow border border-border-light flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-secondary-fixed/50 border border-secondary/20 text-on-secondary-container rounded-full font-label-sm">毛发光泽度良好</span>
+<span class="px-3 py-1 bg-secondary-fixed/50 border border-secondary/20 text-on-secondary-container rounded-full font-label-sm">便便正常</span>
+<span class="px-3 py-1 bg-secondary-fixed/50 border border-secondary/20 text-on-secondary-container rounded-full font-label-sm">食欲旺盛</span>
+<span class="px-3 py-1 bg-primary-fixed/50 border border-primary/20 text-on-primary-fixed-variant rounded-full font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                            右耳轻微红肿 (观察中)
+                        </span>
+</div>
+</div>
+<!-- Recent Activity Log -->
+<div>
+<h3 class="font-headline-md text-headline-md text-deep-plum mb-3">最近动态</h3>
+<div class="bg-surface rounded-3xl p-5 soft-shadow border border-border-light flex flex-col gap-4 border-l-4 border-l-primary">
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-border-light">
+<div class="w-full h-full bg-cover bg-center" data-alt="A sunny afternoon scene in a lush green dog park. The warm, golden hour light creates soft shadows. Designed in a premium, editorial photography style with soft focus background, capturing a peaceful and happy outdoor moment. Warm peach and cream tones dominate." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDa6PORD9eDAb6PwhhLw3hFxczY1TK8hygCaCHUNEi7i7SAQ99B7HEUC2zfaicIUylABOIaiS7kCO4HzTzMJfPey410b90gybZmeL3lA46I9joRJyDtvOQeSbl2RoYVIg3CL832nNerc6CIjwfTyelVEeNns1_Sn-iKqU8xDnZK50uR_zdgaiodS7WYU6hNFb0rlL-ezWM0gYcdCRu6-2oSGdJwQHK4a7m9kYYnfs39yIsGfvmsZ52Gz6FuAodPmTtp4zF2DiJSvbo')"></div>
+</div>
+<div class="flex flex-col justify-center">
+<span class="font-label-sm text-subtle-text">昨天 17:30</span>
+<h4 class="font-body-md font-semibold text-on-surface">朝阳公园散步 45分钟</h4>
+<p class="font-label-sm text-subtle-text line-clamp-1 mt-1">结识了新朋友小金毛，玩得很开心。</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Nav Component Translation) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 bg-surface dark:bg-surface-dim shadow-[0_-4px_20px_-4px_rgba(46,34,61,0.05)] rounded-t-xl md:hidden">
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-on-primary-fixed-variant text-on-primary-container dark:text-primary-fixed rounded-full px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm mt-1">首页</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed-dim transition-all" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-sm mt-1">健康档案</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed-dim transition-all" href="#">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="font-label-sm mt-1">生活记录</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed-dim transition-all" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm mt-1">记忆星河</span>
+</a>
+</nav>
+</body></html>

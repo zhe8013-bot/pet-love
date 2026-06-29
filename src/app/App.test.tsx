@@ -20,6 +20,19 @@ describe('PetPlanet app', () => {
 
     await user.click(screen.getByRole('button', { name: /选择米粒/ }))
     expect(screen.getByText('米粒的本月概览')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '添加回忆' })).not.toBeInTheDocument()
+  })
+
+  it('lets the user complete and postpone care tasks', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await screen.findByRole('heading', { name: '今天也一起好好生活' })
+    await user.click(screen.getByRole('button', { name: '完成驱虫' }))
+    expect(screen.getByText('驱虫已完成')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '稍后处理月度体重' }))
+    expect(screen.getByText('月度体重已稍后提醒')).toBeInTheDocument()
   })
 
   it('navigates to health and life records from the primary navigation', async () => {
@@ -50,7 +63,27 @@ describe('PetPlanet app', () => {
     await user.click(within(dialog).getByRole('button', { name: '保存病历' }))
 
     expect(await screen.findByText('脚垫轻微擦伤')).toBeInTheDocument()
-    expect(screen.getByText('治疗中')).toBeInTheDocument()
+    expect(screen.getAllByText('治疗中').length).toBeGreaterThan(0)
+  })
+
+  it('filters, opens and deletes a medical record', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('link', { name: '健康档案' }))
+    const search = await screen.findByRole('searchbox', { name: '搜索病历' })
+    await user.type(search, '消化')
+    expect(screen.getByText('轻度消化不良')).toBeInTheDocument()
+    expect(screen.queryByText('各项指标正常')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '查看轻度消化不良详情' }))
+    const detail = screen.getByRole('dialog', { name: '病历详情' })
+    expect(within(detail).getByText('宠物益生菌，每日一次')).toBeInTheDocument()
+    await user.click(within(detail).getByRole('button', { name: '删除病历' }))
+    const confirm = screen.getByRole('dialog', { name: '删除这条病历？' })
+    await user.click(within(confirm).getByRole('button', { name: '确认删除' }))
+
+    expect(await screen.findByText('没有找到符合条件的病历')).toBeInTheDocument()
   })
 
   it('adds monthly consumption from the life page', async () => {
@@ -71,28 +104,40 @@ describe('PetPlanet app', () => {
     await user.type(within(dialog).getByLabelText('花费'), '88')
     await user.click(within(dialog).getByRole('button', { name: '保存记录' }))
 
-    expect(await screen.findByText('营养补充')).toBeInTheDocument()
+    expect((await screen.findAllByText('营养补充')).length).toBeGreaterThan(0)
   })
 
-  it('switches memory modes and adds a warm daily memory', async () => {
+  it('filters and deletes monthly care records with confirmation', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('link', { name: '记忆星河' }))
-    expect(await screen.findByRole('heading', { name: '记忆星河' })).toBeInTheDocument()
-    expect(screen.getByRole('region', { name: '2D 回忆画廊' })).toBeInTheDocument()
+    await user.click(screen.getByRole('link', { name: '生活记录' }))
+    await screen.findByRole('heading', { name: '生活记录' })
+    await user.click(screen.getByRole('button', { name: '只看洗澡' }))
+    expect(screen.getByText('2 次')).toBeInTheDocument()
+    expect(screen.queryByText('6 kg')).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: '成长回顾' }))
-    expect(screen.getByText('四季时间长廊')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '删除洗澡记录' }))
+    const confirm = screen.getByRole('dialog', { name: '删除这条消耗记录？' })
+    await user.click(within(confirm).getByRole('button', { name: '确认删除' }))
+    expect(await screen.findByText('这个筛选下还没有记录')).toBeInTheDocument()
+  })
 
-    await user.click(screen.getByRole('button', { name: '添加回忆' }))
-    const dialog = screen.getByRole('dialog', { name: '添加回忆' })
-    await user.type(within(dialog).getByLabelText('日期'), '2026-06-28')
-    await user.selectOptions(within(dialog).getByLabelText('心情'), '开心')
-    await user.type(within(dialog).getByLabelText('留言'), '今天学会了新的握手动作。')
-    await user.click(within(dialog).getByRole('button', { name: '保存回忆' }))
+  it('uses four non-3d product routes and switches pets globally', async () => {
+    const user = userEvent.setup()
+    render(<App />)
 
-    expect(await screen.findByText('今天学会了新的握手动作。')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: '今天也一起好好生活' })).toBeInTheDocument()
+    const navigation = screen.getByRole('navigation', { name: '主导航' })
+    expect(within(navigation).getAllByRole('link')).toHaveLength(4)
+    expect(within(navigation).queryByRole('link', { name: '记忆星河' })).not.toBeInTheDocument()
+
+    await user.click(within(navigation).getByRole('link', { name: '宠物档案' }))
+    expect(await screen.findByRole('heading', { name: '宠物档案' })).toBeInTheDocument()
+    expect(screen.getByText('豆包的照护档案')).toBeInTheDocument()
+
+    await user.selectOptions(screen.getByLabelText('当前宠物'), 'pet-mili')
+    expect(await screen.findByText('米粒的照护档案')).toBeInTheDocument()
   })
 
   it('adds a new pet role card', async () => {

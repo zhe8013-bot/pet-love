@@ -11,6 +11,7 @@ import type {
   PetDataState,
   WeightEntry,
 } from '../domain/types'
+import { filesToDataUrls } from '../lib/files'
 import { createSeedState } from './seed'
 
 const STORAGE_KEY = 'petplanet:data:v1'
@@ -18,7 +19,10 @@ const STORAGE_KEY = 'petplanet:data:v1'
 const createId = (prefix: string) =>
   `${prefix}-${globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)}`
 
+export type AssetKind = 'avatar' | 'medical' | 'memory'
+
 export interface PetRepository {
+  uploadAssets(files: File[], petId: string, kind: AssetKind): Promise<string[]>
   listPets(): Promise<Pet[]>
   getPet(id: string): Promise<Pet | undefined>
   addPet(pet: Omit<Pet, 'id'>): Promise<Pet>
@@ -64,6 +68,9 @@ export const createLocalPetRepository = (
   }
 
   return {
+    async uploadAssets(files) {
+      return filesToDataUrls(files)
+    },
     async listPets() {
       return read().pets
     },
@@ -149,7 +156,15 @@ export const createLocalPetRepository = (
     },
     async removeWeight(id) {
       mutate((state) => {
+        const removed = state.weights.find((item) => item.id === id)
         state.weights = state.weights.filter((item) => item.id !== id)
+        if (!removed) return
+        const latest = state.weights
+          .filter((item) => item.petId === removed.petId)
+          .sort((a, b) => a.measuredAt.localeCompare(b.measuredAt))
+          .at(-1)
+        const pet = state.pets.find((item) => item.id === removed.petId)
+        if (pet) pet.currentWeight = latest?.weightKg ?? 0
       })
     },
     async listMemories(petId) {
