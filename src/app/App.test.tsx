@@ -34,6 +34,43 @@ describe('PetPlanet app', () => {
     expect(screen.getByRole('link', { name: '打开生活回忆' })).toHaveAttribute('href', '/memories')
   })
 
+  it('adds and persists a todo for the current pet', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(<App />)
+
+    expect(await screen.findByRole('heading', { name: '今日待办' })).toBeInTheDocument()
+    expect(screen.queryByText('今日照护')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '添加待办' }))
+
+    const dialog = screen.getByRole('dialog', { name: '添加待办' })
+    await user.type(within(dialog).getByLabelText('待办事项'), '补充益生菌')
+    await user.type(within(dialog).getByLabelText('描述'), '晚饭后半袋')
+    await user.type(within(dialog).getByLabelText('截至时间'), '2026-07-01T18:30')
+    await user.click(within(dialog).getByRole('button', { name: '保存待办' }))
+
+    expect(await screen.findByText('补充益生菌')).toBeInTheDocument()
+    expect(screen.getByText('晚饭后半袋')).toBeInTheDocument()
+    unmount()
+    render(<App />)
+    expect(await screen.findByText('补充益生菌')).toBeInTheDocument()
+  })
+
+  it('validates todos and keeps them scoped to the current pet', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(await screen.findByRole('button', { name: '添加待办' }))
+    await user.click(screen.getByRole('button', { name: '保存待办' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('请填写待办事项和截至时间')
+
+    const dialog = screen.getByRole('dialog', { name: '添加待办' })
+    await user.type(within(dialog).getByLabelText('待办事项'), '补充益生菌')
+    await user.type(within(dialog).getByLabelText('截至时间'), '2026-07-01T18:30')
+    await user.click(within(dialog).getByRole('button', { name: '保存待办' }))
+    await user.selectOptions(screen.getByLabelText('当前宠物'), 'pet-mili')
+    expect(screen.queryByText('补充益生菌')).not.toBeInTheDocument()
+  })
+
   it('lets the user complete and postpone care tasks', async () => {
     const user = userEvent.setup()
     render(<App />)

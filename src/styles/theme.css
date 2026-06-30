@@ -650,6 +650,40 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   font-weight: 750;
 }
 
+.todo-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.todo-heading-actions > span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.add-todo-button {
+  min-height: 38px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--peach-dark);
+  border: 0;
+  border-radius: 999px;
+  background: #fff0e9;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.add-todo-button:hover {
+  background: #ffe6dc;
+}
+
+.todo-form textarea {
+  min-height: 104px;
+}
+
 .home-section-heading > button {
   padding: 4px 0;
   display: inline-flex;
@@ -1090,6 +1124,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
   .home-section-heading {
     margin-bottom: 12px;
+  }
+
+  .today-care .home-section-heading {
+    align-items: flex-start;
+  }
+
+  .todo-heading-actions {
+    display: grid;
+    justify-items: end;
+    gap: 7px;
   }
 
   .home-section-heading h2 {
