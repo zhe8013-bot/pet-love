@@ -1,61 +1,61 @@
-# PetPlanet Care Foundation Implementation Plan
+# PetPlanet 照护数据基础实施计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (- [ ]) syntax for tracking.
+> **面向执行代理：** 必须使用 superpowers:subagent-driven-development（推荐）或 superpowers:executing-plans，逐项实施本计划。步骤使用复选框（- [ ]）跟踪。
 
-**Goal:** Add a first-class, versioned daily-care domain that works identically in local and API modes without changing any existing PetPlanet user flow.
+**目标：** 新增一套正式、可版本迁移的日常照护领域，使其在本地模式和 API 模式下行为一致，同时不改变 PetPlanet 任何现有用户流程。
 
-**Architecture:** Introduce CarePlan and CareOccurrence as independent domain models. Migrate local state non-destructively from petplanet:data:v1 to petplanet:data:v2, generate a rolling seven-day occurrence window deterministically, and expose matching local, HTTP, Express, and SQLite contracts. This foundation deliberately precedes the mobile App Shell and home redesign so later UI work depends on real persisted care data rather than temporary localStorage flags.
+**架构：** 将 CarePlan 和 CareOccurrence 作为独立领域模型。把本地状态从 petplanet:data:v1 无损迁移到 petplanet:data:v2，以确定性方式生成未来七天的滚动执行窗口，并在本地 Repository、HTTP Repository、Express 与 SQLite 中提供一致契约。本阶段刻意先于移动 App Shell 和首页重构，确保后续 UI 使用真实持久化照护数据，而不是临时 localStorage 标记。
 
-**Tech Stack:** TypeScript 6, Vitest, React data contracts, Express 5, better-sqlite3.
+**技术栈：** TypeScript 6、Vitest、React 数据契约、Express 5、better-sqlite3。
 
 ---
 
-## Scope boundary
+## 范围边界
 
-This is the first plan in the approved App transformation. It changes data and tests only; it does not redesign the UI.
+这是已确认 App 转向中的第一份计划。它只修改数据层与测试，不重做 UI。
 
-Later plans, written after this one passes, will cover:
+本计划通过后，再分别编写后续计划：
 
-1. mobile App Shell, five-tab navigation, quick-record sheet, and current-pet home;
-2. Health/Life/Pet mobile presentation and 2D-first memory routing;
-3. PWA installation/offline shell and later Capacitor readiness.
+1. 移动 App Shell、五项导航、快速记录底部面板和当前宠物首页；
+2. 健康、生活、宠物页面移动化，以及 2D 优先的回忆路由；
+3. PWA 安装与离线壳，以及后续 Capacitor 准备。
 
-Do not add navigation, CSS, RTF, service workers, or Capacitor in this plan.
+本计划不得加入导航重构、CSS 重做、RTF、Service Worker 或 Capacitor。
 
-## File map
+## 文件清单
 
-**Create**
+**新增**
 
-- src/data/migrateState.ts — validates and migrates local state.
-- src/data/migrateState.test.ts — preservation, rejection, and idempotence.
-- src/features/care/schedule.ts — generates missing occurrences.
-- src/features/care/schedule.test.ts — once/daily/weekly and duplicate coverage.
+- src/data/migrateState.ts：校验并迁移本地状态。
+- src/data/migrateState.test.ts：覆盖数据保留、非法数据拒绝和幂等性。
+- src/features/care/schedule.ts：生成缺失的照护执行记录。
+- src/features/care/schedule.test.ts：覆盖单次、每日、每周和去重。
 
-**Modify**
+**修改**
 
-- src/domain/types.ts — care types and schema version.
-- src/data/seed.ts — v2 state with three seed plans.
-- src/data/repository.ts — local care contract and v2 storage.
-- src/data/repository.test.ts — local CRUD, upsert, and cascade tests.
-- src/data/httpRepository.ts — matching HTTP care contract.
-- src/data/httpRepository.test.ts — request path and error tests.
-- server/db.ts — care tables, seed plans, and row mappers.
-- server/db.test.ts — schema and uniqueness tests.
-- server/index.ts — care endpoints.
+- src/domain/types.ts：照护类型和状态版本。
+- src/data/seed.ts：包含三条种子计划的 v2 状态。
+- src/data/repository.ts：本地照护契约与 v2 存储。
+- src/data/repository.test.ts：本地增删改查、upsert 和级联测试。
+- src/data/httpRepository.ts：一致的 HTTP 照护契约。
+- src/data/httpRepository.test.ts：请求路径与错误测试。
+- server/db.ts：照护数据表、种子计划和行映射。
+- server/db.test.ts：表结构与唯一约束测试。
+- server/index.ts：照护 API 端点。
 
-## Task 1: Add versioned care types and safe local migration
+## 任务 1：新增版本化照护类型与安全本地迁移
 
-**Files:**
+**文件：**
 
-- Modify: src/domain/types.ts
-- Modify: src/data/seed.ts
-- Create: src/data/migrateState.ts
-- Create: src/data/migrateState.test.ts
-- Modify: src/data/repository.ts
+- 修改：src/domain/types.ts
+- 修改：src/data/seed.ts
+- 新增：src/data/migrateState.ts
+- 新增：src/data/migrateState.test.ts
+- 修改：src/data/repository.ts
 
-- [ ] **Step 1: Write failing migration tests**
+- [ ] **步骤 1：编写必然失败的迁移测试**
 
-Create src/data/migrateState.test.ts:
+新建 src/data/migrateState.test.ts：
 
     import { describe, expect, it } from 'vitest'
     import { createSeedState } from './seed'
@@ -92,17 +92,17 @@ Create src/data/migrateState.test.ts:
       })
     })
 
-- [ ] **Step 2: Run the test and verify it fails**
+- [ ] **步骤 2：运行测试并确认失败**
 
-Run:
+运行：
 
     npm test -- src/data/migrateState.test.ts
 
-Expected: FAIL because migrateState.ts and the care fields do not exist.
+预期：FAIL，因为 migrateState.ts 和照护字段尚不存在。
 
-- [ ] **Step 3: Add the care domain types**
+- [ ] **步骤 3：新增照护领域类型**
 
-Append to src/domain/types.ts:
+追加到 src/domain/types.ts：
 
     export type CareCategory = 'feeding' | 'walk' | 'medication' | 'grooming' | 'other'
     export type CareStatus = 'pending' | 'done' | 'snoozed' | 'skipped'
@@ -136,7 +136,7 @@ Append to src/domain/types.ts:
 
     export type NewCareOccurrence = Omit<CareOccurrence, 'id'>
 
-Replace PetDataState with:
+将 PetDataState 替换为：
 
     export interface PetDataState {
       schemaVersion: 2
@@ -149,9 +149,9 @@ Replace PetDataState with:
       careOccurrences: CareOccurrence[]
     }
 
-- [ ] **Step 4: Implement validation and migration**
+- [ ] **步骤 4：实现校验与迁移**
 
-Create src/data/migrateState.ts:
+新建 src/data/migrateState.ts：
 
     import type { PetDataState } from '../domain/types'
 
@@ -185,9 +185,9 @@ Create src/data/migrateState.ts:
       }
     }
 
-- [ ] **Step 5: Update seed state**
+- [ ] **步骤 5：更新种子状态**
 
-Add schemaVersion: 2 as the first property returned by createSeedState. Add these properties after memories:
+在 createSeedState 返回对象的首项加入 schemaVersion: 2，并在 memories 后加入：
 
     carePlans: [
       {
@@ -220,16 +220,16 @@ Add schemaVersion: 2 as the first property returned by createSeedState. Add thes
     ],
     careOccurrences: [],
 
-- [ ] **Step 6: Switch local reads to v2 without deleting v1**
+- [ ] **步骤 6：将本地读取切换到 v2，同时保留 v1**
 
-In src/data/repository.ts import migratePetDataState and replace the key declaration:
+在 src/data/repository.ts 中导入 migratePetDataState，并替换存储键声明：
 
     import { migratePetDataState } from './migrateState'
 
     const LEGACY_STORAGE_KEY = 'petplanet:data:v1'
     const STORAGE_KEY = 'petplanet:data:v2'
 
-Replace read:
+替换 read：
 
     const read = (): PetDataState => {
       const current = storage.getItem(STORAGE_KEY)
@@ -244,33 +244,33 @@ Replace read:
       return state
     }
 
-Keep write targeting only STORAGE_KEY. Do not remove or overwrite LEGACY_STORAGE_KEY.
+write 仍只写入 STORAGE_KEY。不得删除或覆盖 LEGACY_STORAGE_KEY。
 
-- [ ] **Step 7: Run migration and existing repository tests**
+- [ ] **步骤 7：运行迁移测试与现有 Repository 测试**
 
-Run:
+运行：
 
     npm test -- src/data/migrateState.test.ts src/data/repository.test.ts
 
-Expected: PASS.
+预期：PASS。
 
-- [ ] **Step 8: Commit**
+- [ ] **步骤 8：提交**
 
     git add src/domain/types.ts src/data/seed.ts src/data/migrateState.ts src/data/migrateState.test.ts src/data/repository.ts
     git commit -m "feat: add versioned care data model"
 
-## Task 2: Generate occurrences and implement the local repository contract
+## 任务 2：生成照护执行记录并实现本地 Repository 契约
 
-**Files:**
+**文件：**
 
-- Create: src/features/care/schedule.ts
-- Create: src/features/care/schedule.test.ts
-- Modify: src/data/repository.ts
-- Modify: src/data/repository.test.ts
+- 新增：src/features/care/schedule.ts
+- 新增：src/features/care/schedule.test.ts
+- 修改：src/data/repository.ts
+- 修改：src/data/repository.test.ts
 
-- [ ] **Step 1: Write failing schedule tests**
+- [ ] **步骤 1：编写必然失败的调度测试**
 
-Create src/features/care/schedule.test.ts:
+新建 src/features/care/schedule.test.ts：
 
     import { describe, expect, it } from 'vitest'
     import type { CarePlan } from '../../domain/types'
@@ -362,17 +362,17 @@ Create src/features/care/schedule.test.ts:
       })
     })
 
-- [ ] **Step 2: Run the schedule test and verify it fails**
+- [ ] **步骤 2：运行调度测试并确认失败**
 
-Run:
+运行：
 
     npm test -- src/features/care/schedule.test.ts
 
-Expected: FAIL because schedule.ts does not exist.
+预期：FAIL，因为 schedule.ts 尚不存在。
 
-- [ ] **Step 3: Implement deterministic generation**
+- [ ] **步骤 3：实现确定性执行记录生成**
 
-Create src/features/care/schedule.ts:
+新建 src/features/care/schedule.ts：
 
     import type {
       CareOccurrence,
@@ -440,9 +440,9 @@ Create src/features/care/schedule.ts:
       return created.sort((a, b) => a.dueAt.localeCompare(b.dueAt))
     }
 
-- [ ] **Step 4: Extend PetRepository**
+- [ ] **步骤 4：扩展 PetRepository**
 
-Import CarePlan, CareOccurrence, NewCarePlan, and NewCareOccurrence. Add:
+导入 CarePlan、CareOccurrence、NewCarePlan 和 NewCareOccurrence，并新增：
 
     listCarePlans(petId: string): Promise<CarePlan[]>
     addCarePlan(plan: NewCarePlan): Promise<CarePlan>
@@ -461,9 +461,9 @@ Import CarePlan, CareOccurrence, NewCarePlan, and NewCareOccurrence. Add:
       changes: Partial<Pick<CareOccurrence, 'status' | 'completedAt' | 'snoozedUntil'>>,
     ): Promise<CareOccurrence>
 
-- [ ] **Step 5: Implement the local care methods**
+- [ ] **步骤 5：实现本地照护方法**
 
-Add to createLocalPetRepository:
+添加到 createLocalPetRepository：
 
     async listCarePlans(petId) {
       return read().carePlans.filter((plan) => plan.petId === petId)
@@ -511,14 +511,14 @@ Add to createLocalPetRepository:
       })
     },
 
-Inside removePet add:
+在 removePet 内加入：
 
     state.carePlans = state.carePlans.filter((item) => item.petId !== id)
     state.careOccurrences = state.careOccurrences.filter((item) => item.petId !== id)
 
-- [ ] **Step 6: Write exact local repository tests**
+- [ ] **步骤 6：编写明确的本地 Repository 测试**
 
-Append to src/data/repository.test.ts:
+追加到 src/data/repository.test.ts：
 
     it('upserts one occurrence and persists status changes', async () => {
       const repository = createLocalPetRepository(storage)
@@ -589,32 +589,32 @@ Append to src/data/repository.test.ts:
       )).resolves.toEqual([])
     })
 
-- [ ] **Step 7: Run care and repository tests**
+- [ ] **步骤 7：运行照护与 Repository 测试**
 
-Run:
+运行：
 
     npm test -- src/features/care/schedule.test.ts src/data/repository.test.ts
 
-Expected: PASS.
+预期：PASS。
 
-- [ ] **Step 8: Commit**
+- [ ] **步骤 8：提交**
 
     git add src/features/care/schedule.ts src/features/care/schedule.test.ts src/data/repository.ts src/data/repository.test.ts
     git commit -m "feat: persist daily care occurrences"
 
-## Task 3: Add SQLite and HTTP parity
+## 任务 3：实现 SQLite 与 HTTP 一致性
 
-**Files:**
+**文件：**
 
-- Modify: server/db.ts
-- Modify: server/db.test.ts
-- Modify: server/index.ts
-- Modify: src/data/httpRepository.ts
-- Modify: src/data/httpRepository.test.ts
+- 修改：server/db.ts
+- 修改：server/db.test.ts
+- 修改：server/index.ts
+- 修改：src/data/httpRepository.ts
+- 修改：src/data/httpRepository.test.ts
 
-- [ ] **Step 1: Add a failing schema and uniqueness test**
+- [ ] **步骤 1：新增必然失败的表结构与唯一性测试**
 
-Append this test to server/db.test.ts:
+将以下测试追加到 server/db.test.ts：
 
     it('creates care tables and enforces one occurrence per plan and time', () => {
       const childScript = [
@@ -646,17 +646,17 @@ Append this test to server/db.test.ts:
       expect(result.duplicate).toContain('UNIQUE')
     })
 
-- [ ] **Step 2: Run the database test and verify it fails**
+- [ ] **步骤 2：运行数据库测试并确认失败**
 
-Run:
+运行：
 
     npm test -- server/db.test.ts
 
-Expected: FAIL because the care tables do not exist.
+预期：FAIL，因为照护数据表尚不存在。
 
-- [ ] **Step 3: Create the SQLite schema**
+- [ ] **步骤 3：创建 SQLite 表结构**
 
-Add to the existing db.exec block:
+添加到现有 db.exec 块：
 
     CREATE TABLE IF NOT EXISTS care_plans (
       id TEXT PRIMARY KEY,
@@ -679,7 +679,7 @@ Add to the existing db.exec block:
       UNIQUE(plan_id, due_at)
     );
 
-Add row mappers:
+新增行映射函数：
 
     export function carePlanRow(row: Record<string, unknown>) {
       return {
@@ -705,13 +705,13 @@ Add row mappers:
       }
     }
 
-Inside seedIfEmpty, define:
+在 seedIfEmpty 内定义：
 
     const insertCarePlan = db.prepare(
       'INSERT INTO care_plans (id, pet_id, title, category, schedule_json, notes, is_active) VALUES (@id, @petId, @title, @category, @scheduleJson, @notes, @isActive)',
     )
 
-Inside the seedAll transaction, after pets are inserted, add:
+在 seedAll 事务中、插入 pets 后加入：
 
     const carePlans = [
       {
@@ -744,11 +744,11 @@ Inside the seedAll transaction, after pets are inserted, add:
     ]
     for (const plan of carePlans) insertCarePlan.run(plan)
 
-Do not seed occurrences.
+不要预置 CareOccurrence。
 
-- [ ] **Step 4: Add all care endpoints**
+- [ ] **步骤 4：新增全部照护 API 端点**
 
-Import carePlanRow and careOccurrenceRow in server/index.ts. Add:
+在 server/index.ts 中导入 carePlanRow 和 careOccurrenceRow，并加入：
 
     app.get('/api/pets/:petId/care-plans', (req, res) => {
       const rows = db.prepare(
@@ -854,9 +854,9 @@ Import carePlanRow and careOccurrenceRow in server/index.ts. Add:
       res.json(careOccurrenceRow(row as Record<string, unknown>))
     })
 
-- [ ] **Step 5: Implement the HTTP repository methods**
+- [ ] **步骤 5：实现 HTTP Repository 方法**
 
-Import the four care types. Add:
+导入对应照护类型，并加入：
 
     async listCarePlans(petId) {
       return request<CarePlan[]>(baseUrl + '/pets/' + petId + '/care-plans')
@@ -899,9 +899,9 @@ Import the four care types. Add:
       })
     },
 
-- [ ] **Step 6: Add exact HTTP contract tests**
+- [ ] **步骤 6：新增明确的 HTTP 契约测试**
 
-Append to src/data/httpRepository.test.ts:
+追加到 src/data/httpRepository.test.ts：
 
     it('requests care occurrences with encoded range parameters', async () => {
       const fetchMock = vi.fn().mockResolvedValue(
@@ -970,52 +970,52 @@ Append to src/data/httpRepository.test.ts:
       )
     })
 
-- [ ] **Step 7: Run server and HTTP tests**
+- [ ] **步骤 7：运行服务器与 HTTP 测试**
 
-Run:
+运行：
 
     npm test -- server/db.test.ts src/data/httpRepository.test.ts
 
-Expected: PASS.
+预期：PASS。
 
-- [ ] **Step 8: Commit**
+- [ ] **步骤 8：提交**
 
     git add server/db.ts server/db.test.ts server/index.ts src/data/httpRepository.ts src/data/httpRepository.test.ts
     git commit -m "feat: add care API persistence"
 
-## Task 4: Verify the foundation and document the new data contract
+## 任务 4：验证基础能力并记录新数据契约
 
-**Files:**
+**文件：**
 
-- Modify: README.md
+- 修改：README.md
 
-- [ ] **Step 1: Run the complete automated suite**
+- [ ] **步骤 1：运行完整自动化测试**
 
-Run:
+运行：
 
     npm test
 
-Expected: all existing and new tests PASS.
+预期：全部现有与新增测试 PASS。
 
-- [ ] **Step 2: Run the production build**
+- [ ] **步骤 2：运行生产构建**
 
-Run:
+运行：
 
     npm run build
 
-Expected: TypeScript and Vite exit 0.
+预期：TypeScript 与 Vite 均以状态码 0 退出。
 
-- [ ] **Step 3: Smoke-test local and API parity**
+- [ ] **步骤 3：冒烟验证本地模式与 API 模式一致性**
 
-Run the API:
+启动 API：
 
     npm run server
 
-In another terminal run:
+在另一个终端启动前端：
 
     npm run dev
 
-The automated repository tests verify local mode. In PowerShell, verify API mode with:
+自动化 Repository 测试负责验证本地模式。使用以下 PowerShell 命令验证 API 模式：
 
     $planBody = '{"title":"睡前梳毛","category":"grooming","schedule":{"kind":"daily","time":"21:30"},"notes":"","isActive":true}'
     $plan = Invoke-RestMethod -Method Post -Uri 'http://localhost:61414/api/pets/pet-doubao/care-plans' -ContentType 'application/json' -Body $planBody
@@ -1028,35 +1028,35 @@ The automated repository tests verify local mode. In PowerShell, verify API mode
     $items = Invoke-RestMethod -Uri 'http://localhost:61414/api/pets/pet-doubao/care-occurrences?from=2026-06-30T00%3A00%3A00.000Z&to=2026-06-30T23%3A59%3A59.999Z'
     if (@($items).Count -ne 1 -or $items[0].status -ne 'done') { throw 'API care parity check failed' }
 
-Expected: no exception; the duplicate POST returns the original id and the final list contains one done occurrence.
+预期：没有异常；重复 POST 返回同一个 id，最终列表只有一条状态为 done 的执行记录。
 
-- [ ] **Step 4: Update README**
+- [ ] **步骤 4：更新 README**
 
-Add a short Data model section stating:
+新增简短的“数据模型”章节，说明：
 
-- local storage now uses petplanet:data:v2 and migrates v1 non-destructively;
-- CarePlan stores recurring or one-time intent;
-- CareOccurrence stores due time and completion history;
-- local and API repositories expose the same care methods;
-- this commit does not yet change visible navigation or home UI.
+- 本地存储改用 petplanet:data:v2，并无损迁移 v1；
+- CarePlan 保存周期性或单次照护意图；
+- CareOccurrence 保存到期时间和完成历史；
+- 本地与 API Repository 暴露相同照护方法；
+- 本阶段尚不修改可见导航或首页 UI。
 
-- [ ] **Step 5: Commit documentation**
+- [ ] **步骤 5：提交文档**
 
     git add README.md
     git commit -m "docs: document care data foundation"
 
-## Final checkpoint
+## 最终检查点
 
-Run:
+运行：
 
     git status --short
     npm test
     npm run build
 
-Expected:
+预期：
 
-- only intentionally untracked design-preview files remain;
-- all tests pass;
-- the build exits 0;
-- four focused commits implement migration, local scheduling, API parity, and documentation;
-- no App Shell, CSS redesign, RTF, PWA, or Capacitor changes are present.
+- 只保留有意未跟踪的设计预览文件；
+- 所有测试通过；
+- 构建以状态码 0 退出；
+- 四个聚焦提交分别实现迁移、本地调度、API 一致性和文档；
+- 不包含 App Shell、CSS 重做、RTF、PWA 或 Capacitor 改动。
