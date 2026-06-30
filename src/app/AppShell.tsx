@@ -4,6 +4,7 @@ import {
   FirstAidKit,
   House,
   IdentificationCard,
+  Images,
   PawPrint,
   Plus,
 } from '@phosphor-icons/react'
@@ -13,9 +14,10 @@ import { usePetData } from '../data/PetDataProvider'
 
 const navItems = [
   { to: '/', label: '首页', icon: House },
-  { to: '/pets', label: '宠物档案', icon: IdentificationCard },
-  { to: '/health', label: '健康档案', icon: FirstAidKit },
-  { to: '/life', label: '生活记录', icon: ChartLineUp },
+  { to: '/health', label: '健康', icon: FirstAidKit },
+  { to: '/life', label: '生活', icon: ChartLineUp },
+  { to: '/memories', label: '回忆', icon: Images },
+  { to: '/pets', label: '宠物', icon: IdentificationCard },
 ]
 
 function AppTopbar() {
@@ -40,6 +42,7 @@ function AppTopbar() {
             <Link to="/health?new=1" onClick={() => setQuickOpen(false)}>新增病历</Link>
             <Link to="/life?new=consumption" onClick={() => setQuickOpen(false)}>记录消耗</Link>
             <Link to="/life?new=weight" onClick={() => setQuickOpen(false)}>记录体重</Link>
+            <Link to="/memories?new=1" onClick={() => setQuickOpen(false)}>添加回忆</Link>
           </div>
         )}
       </div>

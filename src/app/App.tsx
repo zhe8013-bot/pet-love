@@ -8,6 +8,7 @@ import { AppShell } from './AppShell'
 const HealthPage = lazy(() => import('../features/health/HealthPage').then((module) => ({ default: module.HealthPage })))
 const LifePage = lazy(() => import('../features/life/LifePage').then((module) => ({ default: module.LifePage })))
 const PetProfilePage = lazy(() => import('../features/pets/PetProfilePage').then((module) => ({ default: module.PetProfilePage })))
+const MemoryPage = lazy(() => import('../features/memories/MemoryPage').then((module) => ({ default: module.MemoryPage })))
 
 export function App() {
   return (
@@ -20,6 +21,7 @@ export function App() {
               <Route path="pets" element={<PetProfilePage />} />
               <Route path="health" element={<HealthPage />} />
               <Route path="life" element={<LifePage />} />
+              <Route path="memories" element={<MemoryPage />} />
               <Route path="*" element={<Navigate replace to="/" />} />
             </Route>
           </Routes>
