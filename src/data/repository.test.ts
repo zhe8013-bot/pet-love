@@ -123,6 +123,42 @@ describe('local pet repository', () => {
     expect((await repository.listWeights(pet.id)).map((item) => item.weightKg)).toEqual([32.1, 31.8])
   })
 
+  it('stores care events by pet and date in reverse time order', async () => {
+    const initialState = createSeedState()
+    initialState.careEvents = []
+    const repository = createLocalPetRepository(storage, initialState)
+    const [dog, cat] = await repository.listPets()
+
+    const breakfast = await repository.addCareEvent({
+      petId: dog.id,
+      kind: 'feeding',
+      occurredAt: '2026-06-30T08:00',
+      amount: 180,
+      unit: 'g',
+    })
+    await repository.addCareEvent({
+      petId: dog.id,
+      kind: 'water',
+      occurredAt: '2026-06-30T10:30',
+      amount: 250,
+      unit: 'ml',
+    })
+    await repository.addCareEvent({
+      petId: cat.id,
+      kind: 'feeding',
+      occurredAt: '2026-06-30T09:00',
+      amount: 60,
+      unit: 'g',
+    })
+
+    expect((await repository.listCareEvents(dog.id, '2026-06-30')).map((item) => item.kind)).toEqual([
+      'water',
+      'feeding',
+    ])
+    await repository.removeCareEvent(breakfast.id)
+    expect(await repository.listCareEvents(dog.id, '2026-06-30')).toHaveLength(1)
+  })
+
   it('recalculates current weight after deleting the latest measurement', async () => {
     const initialState = createSeedState()
     const pet = initialState.pets[0]

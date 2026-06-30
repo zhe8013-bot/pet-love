@@ -84,6 +84,7 @@ export const createSeedState = (): PetDataState => ({
     { id: 'weight-3', petId: 'pet-doubao', measuredAt: '2026-05-08', weightKg: 31.9 },
     { id: 'weight-4', petId: 'pet-doubao', measuredAt: '2026-06-20', weightKg: 31.8 },
   ],
+  careEvents: [],
   memories: [
     { id: 'memory-1', petId: 'pet-doubao', occurredAt: '2024-03-12', mood: '开心', note: '第一次来到我们家。', photos: ['/assets/dog-avatar.jpg'], isHighlight: true },
     { id: 'memory-2', petId: 'pet-doubao', occurredAt: '2024-07-20', mood: '调皮', note: '第一次把拖鞋藏到沙发底下。', photos: ['/assets/memory-sunlit-nap.jpg'], isHighlight: false },

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { App } from './App'
@@ -93,7 +93,7 @@ describe('PetPlanet app', () => {
 
     await user.click(screen.getByRole('link', { name: '生活' }))
     expect(await screen.findByRole('heading', { name: '生活记录' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: '记录体重' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: '记录体重' })).toBeInTheDocument()
   })
 
   it('adds a medical record from the health page', async () => {
@@ -153,6 +153,50 @@ describe('PetPlanet app', () => {
     await user.click(within(dialog).getByRole('button', { name: '保存记录' }))
 
     expect((await screen.findAllByText('营养补充')).length).toBeGreaterThan(0)
+  })
+
+  it('records separate feeding and water events in the daily care timeline', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState({}, '', '/life')
+    render(<App />)
+
+    await user.click(await screen.findByRole('button', { name: '记录喂食' }))
+    const feedingDialog = screen.getByRole('dialog', { name: '记录喂食' })
+    await user.type(within(feedingDialog).getByLabelText('发生时间'), '2026-06-30T08:30')
+    await user.type(within(feedingDialog).getByLabelText('数量（g）'), '180')
+    await user.click(within(feedingDialog).getByRole('button', { name: '保存喂食' }))
+
+    expect(await screen.findByText('180 g')).toBeInTheDocument()
+    expect(screen.getByText('08:30')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '记录饮水' }))
+    const waterDialog = screen.getByRole('dialog', { name: '记录饮水' })
+    await user.type(within(waterDialog).getByLabelText('发生时间'), '2026-06-30T10:15')
+    await user.type(within(waterDialog).getByLabelText('数量（ml）'), '250')
+    await user.click(within(waterDialog).getByRole('button', { name: '保存饮水' }))
+
+    expect(await screen.findByText('250 ml')).toBeInTheDocument()
+    expect(screen.getByText('10:15')).toBeInTheDocument()
+  })
+
+  it('adds a dated photo to the aggregated life photo area', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState({}, '', '/life')
+    render(<App />)
+
+    await user.click(await screen.findByRole('button', { name: '上传照片' }))
+    const dialog = screen.getByRole('dialog', { name: '添加生活照片' })
+    await user.type(within(dialog).getByLabelText('拍摄时间'), '2026-06-28T16:20')
+    await user.type(within(dialog).getByLabelText('一句话说明'), '草地上的下午')
+    await user.upload(
+      within(dialog).getByLabelText('照片'),
+      new File(['pet-photo'], 'afternoon.jpg', { type: 'image/jpeg' }),
+    )
+    expect((within(dialog).getByLabelText('照片') as HTMLInputElement).files?.[0].size).toBeGreaterThan(0)
+    await user.click(within(dialog).getByRole('button', { name: '保存照片' }))
+
+    await waitFor(() => expect(localStorage.getItem('petplanet:data:v1')).toContain('草地上的下午'))
+    expect(await screen.findByText('草地上的下午')).toBeInTheDocument()
   })
 
   it('filters and deletes monthly care records with confirmation', async () => {

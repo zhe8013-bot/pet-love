@@ -57,4 +57,31 @@ describe('database seed data', () => {
       '/assets/memory-sunlit-nap.jpg',
     ])
   })
+
+  it('stores and maps daily care events', () => {
+    const childScript = `
+      const { db, seedIfEmpty, careEventRow } = await import(${JSON.stringify(dbModuleUrl)});
+      seedIfEmpty();
+      db.prepare('INSERT INTO care_events (id, pet_id, kind, occurred_at, amount, unit) VALUES (?, ?, ?, ?, ?, ?)')
+        .run('care-1', 'pet-doubao', 'feeding', '2026-06-30T08:30', 180, 'g');
+      const event = careEventRow(db.prepare('SELECT * FROM care_events WHERE id = ?').get('care-1'));
+      console.log(JSON.stringify(event));
+      db.close();
+    `
+
+    const stdout = execFileSync(
+      process.execPath,
+      ['--import', tsxLoader, '--input-type=module', '--eval', childScript],
+      { cwd: tempDir, encoding: 'utf8' },
+    )
+
+    expect(JSON.parse(stdout.trim().split(/\r?\n/).at(-1)!)).toEqual({
+      id: 'care-1',
+      petId: 'pet-doubao',
+      kind: 'feeding',
+      occurredAt: '2026-06-30T08:30',
+      amount: 180,
+      unit: 'g',
+    })
+  })
 })

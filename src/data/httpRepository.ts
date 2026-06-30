@@ -1,4 +1,5 @@
 import type {
+  CareEvent,
   ConsumptionEntry,
   MedicalRecord,
   Memory,
@@ -116,6 +117,24 @@ export function createHttpPetRepository(baseUrl: string): PetRepository {
 
     async removeWeight(id) {
       await request<void>(`${baseUrl}/weights/${id}`, { method: 'DELETE' })
+    },
+
+    async listCareEvents(petId, date) {
+      return request<CareEvent[]>(
+        `${baseUrl}/pets/${petId}/care-events?date=${encodeURIComponent(date)}`,
+      )
+    },
+
+    async addCareEvent(input) {
+      return request<CareEvent>(`${baseUrl}/pets/${input.petId}/care-events`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      })
+    },
+
+    async removeCareEvent(id) {
+      await request<void>(`${baseUrl}/care-events/${id}`, { method: 'DELETE' })
     },
 
     async listMemories(petId) {

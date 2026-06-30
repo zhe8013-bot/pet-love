@@ -1,8 +1,10 @@
 import type {
+  CareEvent,
   ConsumptionEntry,
   MedicalRecord,
   Memory,
   MonthlySummary,
+  NewCareEvent,
   NewConsumptionEntry,
   NewMedicalRecord,
   NewMemory,
@@ -38,6 +40,9 @@ export interface PetRepository {
   listWeights(petId: string): Promise<WeightEntry[]>
   addWeight(entry: NewWeightEntry): Promise<WeightEntry>
   removeWeight(id: string): Promise<void>
+  listCareEvents(petId: string, date: string): Promise<CareEvent[]>
+  addCareEvent(event: NewCareEvent): Promise<CareEvent>
+  removeCareEvent(id: string): Promise<void>
   listMemories(petId: string): Promise<Memory[]>
   addMemory(memory: NewMemory): Promise<Memory>
   updateMemory(id: string, changes: Partial<Omit<Memory, 'id'>>): Promise<Memory>
@@ -50,7 +55,11 @@ export const createLocalPetRepository = (
 ): PetRepository => {
   const read = (): PetDataState => {
     const stored = storage.getItem(STORAGE_KEY)
-    if (stored) return JSON.parse(stored) as PetDataState
+    if (stored) {
+      const state = JSON.parse(stored) as PetDataState
+      state.careEvents ??= []
+      return state
+    }
     const seed = JSON.parse(JSON.stringify(initialState)) as PetDataState
     storage.setItem(STORAGE_KEY, JSON.stringify(seed))
     return seed
@@ -98,6 +107,7 @@ export const createLocalPetRepository = (
         state.medicalRecords = state.medicalRecords.filter((item) => item.petId !== id)
         state.consumptions = state.consumptions.filter((item) => item.petId !== id)
         state.weights = state.weights.filter((item) => item.petId !== id)
+        state.careEvents = state.careEvents.filter((item) => item.petId !== id)
         state.memories = state.memories.filter((item) => item.petId !== id)
       })
     },
@@ -165,6 +175,23 @@ export const createLocalPetRepository = (
           .at(-1)
         const pet = state.pets.find((item) => item.id === removed.petId)
         if (pet) pet.currentWeight = latest?.weightKg ?? 0
+      })
+    },
+    async listCareEvents(petId, date) {
+      return read().careEvents
+        .filter((item) => item.petId === petId && item.occurredAt.slice(0, 10) === date)
+        .sort((a, b) => b.occurredAt.localeCompare(a.occurredAt))
+    },
+    async addCareEvent(input) {
+      return mutate((state) => {
+        const event = { ...input, id: createId('care') }
+        state.careEvents.push(event)
+        return event
+      })
+    },
+    async removeCareEvent(id) {
+      mutate((state) => {
+        state.careEvents = state.careEvents.filter((item) => item.id !== id)
       })
     },
     async listMemories(petId) {

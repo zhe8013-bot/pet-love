@@ -4,7 +4,7 @@ import multer from 'multer'
 import { v4 as uuid } from 'uuid'
 import path from 'node:path'
 import fs from 'node:fs'
-import { db, seedIfEmpty, petRow, medicalRow, consumptionRow, weightRow, memoryRow } from './db'
+import { db, seedIfEmpty, petRow, medicalRow, consumptionRow, weightRow, careEventRow, memoryRow } from './db'
 import { deleteRecordWithAssetCleanup } from './assetCleanup'
 
 const PORT = 61414
@@ -243,6 +243,52 @@ app.delete('/api/weights/:entryId', (req, res) => {
   const existing = db.prepare('SELECT * FROM weight_entries WHERE id = ?').get(req.params.entryId)
   if (!existing) return res.status(404).json({ message: '体重记录不存在' })
   db.prepare('DELETE FROM weight_entries WHERE id = ?').run(req.params.entryId)
+  res.status(204).send()
+})
+
+// ══════════════════════════════════════════════════════════════════
+// DAILY CARE EVENTS
+// ══════════════════════════════════════════════════════════════════
+
+app.get('/api/pets/:petId/care-events', (req, res) => {
+  const date = req.query.date as string | undefined
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return res.status(400).json({ message: '请选择有效日期' })
+  }
+
+  const rows = db.prepare(`
+    SELECT * FROM care_events
+    WHERE pet_id = ? AND substr(occurred_at, 1, 10) = ?
+    ORDER BY occurred_at DESC
+  `).all(req.params.petId, date)
+  res.json(rows.map(careEventRow))
+})
+
+app.post('/api/pets/:petId/care-events', (req, res) => {
+  const { kind, occurredAt, amount, unit } = req.body
+  const expectedUnit = kind === 'feeding' ? 'g' : kind === 'water' ? 'ml' : undefined
+  const numericAmount = Number(amount)
+
+  if (!expectedUnit || unit !== expectedUnit || typeof occurredAt !== 'string' || !occurredAt || !Number.isFinite(numericAmount) || numericAmount <= 0) {
+    return res.status(400).json({ message: '请填写有效的照护记录' })
+  }
+
+  const pet = db.prepare('SELECT id FROM pets WHERE id = ?').get(req.params.petId)
+  if (!pet) return res.status(404).json({ message: '宠物不存在' })
+
+  const id = `care-${uuid().slice(0, 8)}`
+  db.prepare(`
+    INSERT INTO care_events (id, pet_id, kind, occurred_at, amount, unit)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(id, req.params.petId, kind, occurredAt, numericAmount, unit)
+
+  const row = db.prepare('SELECT * FROM care_events WHERE id = ?').get(id)
+  res.status(201).json(careEventRow(row as Record<string, unknown>))
+})
+
+app.delete('/api/care-events/:eventId', (req, res) => {
+  const result = db.prepare('DELETE FROM care_events WHERE id = ?').run(req.params.eventId)
+  if (result.changes === 0) return res.status(404).json({ message: '照护记录不存在' })
   res.status(204).send()
 })
 

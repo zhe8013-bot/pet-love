@@ -58,6 +58,15 @@ db.exec(`
     weight_kg REAL NOT NULL
   );
 
+  CREATE TABLE IF NOT EXISTS care_events (
+    id TEXT PRIMARY KEY,
+    pet_id TEXT NOT NULL REFERENCES pets(id) ON DELETE CASCADE,
+    kind TEXT NOT NULL CHECK(kind IN ('feeding','water')),
+    occurred_at TEXT NOT NULL,
+    amount REAL NOT NULL CHECK(amount > 0),
+    unit TEXT NOT NULL CHECK(unit IN ('g','ml'))
+  );
+
   CREATE TABLE IF NOT EXISTS memories (
     id TEXT PRIMARY KEY,
     pet_id TEXT NOT NULL REFERENCES pets(id) ON DELETE CASCADE,
@@ -233,6 +242,17 @@ export function weightRow(r: Record<string, unknown>) {
     petId: r.pet_id,
     measuredAt: r.measured_at,
     weightKg: r.weight_kg,
+  }
+}
+
+export function careEventRow(r: Record<string, unknown>) {
+  return {
+    id: r.id,
+    petId: r.pet_id,
+    kind: r.kind,
+    occurredAt: r.occurred_at,
+    amount: r.amount,
+    unit: r.unit,
   }
 }
 

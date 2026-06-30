@@ -54,6 +54,19 @@ export interface WeightEntry {
 
 export type NewWeightEntry = Omit<WeightEntry, 'id'>
 
+export type CareEventKind = 'feeding' | 'water'
+
+export interface CareEvent {
+  id: string
+  petId: string
+  kind: CareEventKind
+  occurredAt: string
+  amount: number
+  unit: 'g' | 'ml'
+}
+
+export type NewCareEvent = Omit<CareEvent, 'id'>
+
 export interface Memory {
   id: string
   petId: string
@@ -76,5 +89,6 @@ export interface PetDataState {
   medicalRecords: MedicalRecord[]
   consumptions: ConsumptionEntry[]
   weights: WeightEntry[]
+  careEvents: CareEvent[]
   memories: Memory[]
 }
