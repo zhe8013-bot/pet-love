@@ -289,6 +289,19 @@ describe('PetPlanet app', () => {
     expect(await screen.findByRole('dialog', { name: '添加回忆' })).toBeInTheDocument()
   })
 
+  it('keeps add and edit pet management inside the profile page', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState({}, '', '/profile')
+    render(<App />)
+
+    expect(await screen.findByRole('heading', { name: '宠物档案' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '添加宠物' }))
+    expect(screen.getByRole('dialog', { name: '添加宠物' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '取消' }))
+    await user.click(screen.getByRole('button', { name: '编辑资料' }))
+    expect(screen.getByRole('dialog', { name: '编辑宠物资料' })).toBeInTheDocument()
+  })
+
   it('keeps the add-pet flow available', async () => {
     const user = userEvent.setup()
     render(<App />)
@@ -301,6 +314,7 @@ describe('PetPlanet app', () => {
     await user.type(within(dialog).getByLabelText('当前体重（kg）'), '18.5')
     await user.click(within(dialog).getByRole('button', { name: '保存宠物' }))
 
-    expect(await within(screen.getByTestId('current-pet-hero')).findByRole('heading', { name: '奶糖' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/profile')
+    expect(await screen.findByText('奶糖的照护档案')).toBeInTheDocument()
   })
 })

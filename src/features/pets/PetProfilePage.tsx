@@ -1,6 +1,6 @@
-import { FirstAidKit, NotePencil, Scales, ShoppingBagOpen, Trash } from '@phosphor-icons/react'
+import { FirstAidKit, NotePencil, Plus, Scales, ShoppingBagOpen } from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { usePetData } from '../../data/PetDataProvider'
 import type { ConsumptionEntry, MedicalRecord, WeightEntry } from '../../domain/types'
 import { PetForm } from '../home/PetForm'
@@ -8,9 +8,11 @@ import { PetForm } from '../home/PetForm'
 const currentMonth = new Date().toISOString().slice(0, 7)
 
 export function PetProfilePage() {
-  const { currentPet, currentPetId, repository } = usePetData()
+  const { currentPet, currentPetId, repository, selectPet } = usePetData()
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [editing, setEditing] = useState(false)
+  const [adding, setAdding] = useState(false)
   const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([])
   const [weights, setWeights] = useState<WeightEntry[]>([])
   const [consumptions, setConsumptions] = useState<ConsumptionEntry[]>([])
@@ -28,7 +30,27 @@ export function PetProfilePage() {
     })
   }, [currentPetId, repository])
 
-  if (!currentPet) return <div className="page"><div className="empty-state">请先添加一只宠物。</div></div>
+  useEffect(() => {
+    if (searchParams.get('addPet') === '1') setAdding(true)
+  }, [searchParams])
+
+  const closeAddForm = () => {
+    setAdding(false)
+    if (searchParams.has('addPet')) setSearchParams({})
+  }
+
+  if (!currentPet) {
+    return (
+      <div className="page profile-page">
+        <header className="page-header profile-heading">
+          <div><p className="eyebrow">PET PROFILE</p><h1>宠物档案</h1><p>从第一位家庭成员开始记录。</p></div>
+          <button className="button primary" onClick={() => setAdding(true)}><Plus size={18} />添加宠物</button>
+        </header>
+        <div className="empty-state">请先添加一只宠物。</div>
+        {adding && <PetForm onClose={closeAddForm} onSaved={(pet) => pet && selectPet(pet.id)} />}
+      </div>
+    )
+  }
 
   const latestMedical = medicalRecords[0]
   const totalCost = consumptions.reduce((sum, item) => sum + item.cost, 0)
@@ -41,6 +63,7 @@ export function PetProfilePage() {
           <h1>宠物档案</h1>
           <p>{currentPet.name}的照护档案</p>
         </div>
+        <button className="button primary" onClick={() => setAdding(true)}><Plus size={18} />添加宠物</button>
       </header>
 
       <section className="profile-hero">
@@ -62,8 +85,8 @@ export function PetProfilePage() {
 
       <section className="quick-action-grid" aria-label="快捷记录">
         <button onClick={() => navigate('/health?new=1')}><FirstAidKit size={22} /><span>新增病历<small>记录本次就诊</small></span></button>
-        <button onClick={() => navigate('/life?new=weight')}><Scales size={22} /><span>记录体重<small>更新成长趋势</small></span></button>
-        <button onClick={() => navigate('/life?new=consumption')}><ShoppingBagOpen size={22} /><span>记录消耗<small>补充本月照护</small></span></button>
+        <button onClick={() => navigate('/daily?new=weight')}><Scales size={22} /><span>记录体重<small>更新成长趋势</small></span></button>
+        <button onClick={() => navigate('/daily?new=consumption')}><ShoppingBagOpen size={22} /><span>记录消耗<small>补充本月照护</small></span></button>
       </section>
 
       <div className="profile-grid">
@@ -95,6 +118,7 @@ export function PetProfilePage() {
       </div>
 
       {editing && <PetForm pet={currentPet} onClose={() => setEditing(false)} onSaved={() => undefined} />}
+      {adding && <PetForm onClose={closeAddForm} onSaved={(pet) => pet && selectPet(pet.id)} />}
     </div>
   )
 }

@@ -71,7 +71,7 @@ export function AppShell() {
             </NavLink>
           ))}
         </nav>
-        <Link className="sidebar-add" to="/?addPet=1">
+        <Link className="sidebar-add" to="/profile?addPet=1">
           <Plus size={20} />
           添加宠物
         </Link>
