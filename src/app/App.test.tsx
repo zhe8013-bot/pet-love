@@ -182,7 +182,7 @@ describe('PetPlanet app', () => {
 
   it('records separate feeding and water events in the daily care timeline', async () => {
     const user = userEvent.setup()
-    window.history.replaceState({}, '', '/life')
+    window.history.replaceState({}, '', '/daily')
     render(<App />)
 
     await user.click(await screen.findByRole('button', { name: '记录喂食' }))
@@ -206,7 +206,7 @@ describe('PetPlanet app', () => {
 
   it('adds a dated photo to the aggregated life photo area', async () => {
     const user = userEvent.setup()
-    window.history.replaceState({}, '', '/life')
+    window.history.replaceState({}, '', '/daily')
     render(<App />)
 
     await user.click(await screen.findByRole('button', { name: '上传照片' }))
