@@ -3,8 +3,6 @@ import {
   Bell,
   BowlFood,
   Camera,
-  Check,
-  ClockCountdown,
   Drop,
   FirstAidKit,
   Plus,
@@ -16,49 +14,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { usePetData } from '../../data/PetDataProvider'
 import type { CareEvent, ConsumptionEntry, MedicalRecord, Memory, WeightEntry } from '../../domain/types'
+import { buildReminderTasks, type TaskStatus } from '../reminders/reminderModel'
 import { PetForm } from './PetForm'
-import { TodoForm, type CustomTodo } from './TodoForm'
+import type { CustomTodo } from './TodoForm'
 
-type TaskStatus = 'done' | 'later'
-
-interface HomeTask {
-  id: string
-  title: string
-  detail: string
-  due: string
-  sortAt: number
-}
-
-const dayInMilliseconds = 86400000
 const localDate = (date = new Date()) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-
-const systemDueTimestamp = (due: string) => {
-  const now = new Date()
-  const relativeDays = due.match(/^(\d+)天后$/)
-  if (relativeDays) return now.getTime() + Number(relativeDays[1]) * dayInMilliseconds
-  if (/^\d{4}-\d{2}-\d{2}$/.test(due)) return new Date(`${due}T23:59`).getTime()
-  if (due === '本月结束前') return new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59).getTime()
-  return Number.MAX_SAFE_INTEGER
-}
-
-const formatTodoDue = (dueAt: string) => {
-  const due = new Date(dueAt)
-  if (Number.isNaN(due.getTime())) return dueAt
-  const now = new Date()
-  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
-  const dueDay = Date.UTC(due.getFullYear(), due.getMonth(), due.getDate())
-  const days = Math.round((dueDay - today) / dayInMilliseconds)
-  const time = new Intl.DateTimeFormat('zh-CN', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).format(due)
-  if (days < 0) return '已到期'
-  if (days === 0) return `今天 ${time}`
-  if (days === 1) return `明天 ${time}`
-  return `${days}天后`
-}
 
 export function HomePage() {
   const { currentPet, currentPetId, selectPet, repository } = usePetData()
@@ -70,7 +31,6 @@ export function HomePage() {
   const [memories, setMemories] = useState<Memory[]>([])
   const [careEvents, setCareEvents] = useState<CareEvent[]>([])
   const [petFormOpen, setPetFormOpen] = useState(false)
-  const [todoFormOpen, setTodoFormOpen] = useState(false)
   const [taskStates, setTaskStates] = useState<Record<string, TaskStatus>>({})
   const [customTodos, setCustomTodos] = useState<CustomTodo[]>([])
   const month = new Date().toISOString().slice(0, 7)
@@ -101,8 +61,6 @@ export function HomePage() {
     })
   }, [currentPetId, month, repository])
 
-  const latestMedical = medicalRecords[0]
-  const followUp = medicalRecords.find((record) => record.status === 'follow-up')
   const totalCost = consumptions.reduce((sum, item) => sum + item.cost, 0)
   const photoCount = memories.reduce((sum, item) => sum + item.photos.length, 0)
   const latestWeight = weights.at(-1)?.weightKg ?? currentPet?.currentWeight ?? 0
@@ -111,40 +69,10 @@ export function HomePage() {
   const todayPhotoCount = memories
     .filter((memory) => memory.occurredAt.startsWith(localDate()))
     .reduce((sum, memory) => sum + memory.photos.length, 0)
-  const tasks = useMemo<HomeTask[]>(() => {
-    if (!currentPet) return []
-    const systemTasks: HomeTask[] = [
-      {
-        id: 'reminder',
-        title: currentPet.reminder,
-        due: currentPet.reminderDate,
-        detail: currentPet.name + '的日常照护提醒',
-        sortAt: systemDueTimestamp(currentPet.reminderDate),
-      },
-      ...(followUp ? [{
-        id: 'follow-up',
-        title: '复诊',
-        due: followUp.followUpDate,
-        detail: followUp.diagnosis,
-        sortAt: systemDueTimestamp(followUp.followUpDate),
-      }] : []),
-      {
-        id: 'weight',
-        title: '月度体重',
-        due: '本月结束前',
-        detail: '更新一次体重，保持趋势连续',
-        sortAt: systemDueTimestamp('本月结束前'),
-      },
-    ]
-    const customTasks = customTodos.map((todo): HomeTask => ({
-      id: todo.id,
-      title: todo.title,
-      detail: todo.description || '为今天留下一件要完成的事',
-      due: formatTodoDue(todo.dueAt),
-      sortAt: new Date(todo.dueAt).getTime(),
-    }))
-    return [...systemTasks, ...customTasks].sort((a, b) => a.sortAt - b.sortAt)
-  }, [currentPet, customTodos, followUp])
+  const tasks = useMemo(
+    () => buildReminderTasks(currentPet, medicalRecords, customTodos),
+    [currentPet, customTodos, medicalRecords],
+  )
 
   const completedCount = tasks.filter((task) => taskStates[task.id] === 'done').length
   const previewPhotos = memories
@@ -157,18 +85,6 @@ export function HomePage() {
     : currentPet?.avatar
       ? [currentPet.avatar]
       : []
-
-  const updateTask = (id: string, status: TaskStatus) => {
-    const next = { ...taskStates, [id]: status }
-    setTaskStates(next)
-    localStorage.setItem('petplanet:tasks:' + currentPetId, JSON.stringify(next))
-  }
-
-  const saveTodo = (todo: CustomTodo) => {
-    const next = [...customTodos, todo].sort((a, b) => a.dueAt.localeCompare(b.dueAt))
-    setCustomTodos(next)
-    localStorage.setItem('petplanet:custom-todos:' + currentPetId, JSON.stringify(next))
-  }
 
   const closePetForm = () => {
     setPetFormOpen(false)
@@ -236,36 +152,25 @@ export function HomePage() {
           </div>
           <div className="todo-heading-actions">
             <span>{completedCount}/{tasks.length} 已完成</span>
-            <button className="add-todo-button" onClick={() => setTodoFormOpen(true)}>
-              <Plus size={15} />添加待办
-            </button>
+            <Link className="add-todo-button" to="/daily?section=reminders">
+              全部提醒<ArrowRight size={15} />
+            </Link>
           </div>
         </div>
         <div className="care-timeline">
-          {tasks.map((task) => {
+          {tasks.slice(0, 3).map((task) => {
             const status = taskStates[task.id]
             return (
               <article key={task.id} className={'care-row ' + (status ?? '')}>
                 <span className="care-row-icon">
-                  {status === 'done'
-                    ? <Check size={18} />
-                    : status === 'later'
-                      ? <ClockCountdown size={18} />
-                      : <Bell size={18} />}
+                  <Bell size={18} />
                 </span>
                 <div>
                   <strong>{task.title}</strong>
                   <p>{task.detail}</p>
                   <time>{task.due}</time>
                 </div>
-                {status ? (
-                  <b>{status === 'done' ? task.title + '已完成' : task.title + '已稍后提醒'}</b>
-                ) : (
-                  <footer>
-                    <button aria-label={'完成' + task.title} onClick={() => updateTask(task.id, 'done')}>完成</button>
-                    <button aria-label={'稍后处理' + task.title} onClick={() => updateTask(task.id, 'later')}>稍后</button>
-                  </footer>
-                )}
+                {status && <b>{status === 'done' ? '已完成' : '稍后提醒'}</b>}
               </article>
             )
           })}
@@ -361,7 +266,6 @@ export function HomePage() {
           }}
         />
       )}
-      {todoFormOpen && <TodoForm onClose={() => setTodoFormOpen(false)} onSaved={saveTodo} />}
     </div>
   )
 }

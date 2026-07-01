@@ -42,6 +42,21 @@ describe('PetPlanet app', () => {
     expect(screen.getByRole('link', { name: '打开生活回忆' })).toHaveAttribute('href', '/memories')
   })
 
+  it('keeps Home reminders read-only and limited to three items', async () => {
+    localStorage.setItem('petplanet:custom-todos:pet-doubao', JSON.stringify([
+      { id: 'todo-a', title: '梳毛', description: '晚饭后', dueAt: '2026-07-02T20:00' },
+      { id: 'todo-b', title: '清洗饭碗', description: '换水时一起', dueAt: '2026-07-03T09:00' },
+    ]))
+    render(<App />)
+
+    const reminderPreview = await screen.findByRole('region', { name: '今日关键提醒' })
+    await within(reminderPreview).findByText('梳毛')
+    expect(within(reminderPreview).getAllByRole('article')).toHaveLength(3)
+    expect(within(reminderPreview).getByRole('link', { name: '全部提醒' })).toHaveAttribute('href', '/daily?section=reminders')
+    expect(within(reminderPreview).queryByRole('button', { name: '添加待办' })).not.toBeInTheDocument()
+    expect(within(reminderPreview).queryByRole('button', { name: '完成驱虫' })).not.toBeInTheDocument()
+  })
+
   it('adds and persists a todo for the current pet', async () => {
     const user = userEvent.setup()
     const { unmount } = render(<App />)
