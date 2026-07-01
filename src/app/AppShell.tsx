@@ -38,11 +38,13 @@ function AppTopbar() {
           <Plus size={17} />快速记录
         </button>
         {quickOpen && (
-          <div className="quick-add-menu">
+          <div className="quick-add-menu" role="menu" aria-label="快速记录菜单">
+            <Link to="/daily?new=feeding" onClick={() => setQuickOpen(false)}>记录喂食</Link>
+            <Link to="/daily?new=water" onClick={() => setQuickOpen(false)}>记录饮水</Link>
+            <Link to="/daily?new=weight" onClick={() => setQuickOpen(false)}>记录体重</Link>
+            <Link to="/daily?new=consumption" onClick={() => setQuickOpen(false)}>记录消耗</Link>
             <Link to="/health?new=1" onClick={() => setQuickOpen(false)}>新增病历</Link>
-            <Link to="/life?new=consumption" onClick={() => setQuickOpen(false)}>记录消耗</Link>
-            <Link to="/life?new=weight" onClick={() => setQuickOpen(false)}>记录体重</Link>
-            <Link to="/memories?new=1" onClick={() => setQuickOpen(false)}>添加回忆</Link>
+            <Link to="/daily?new=photo" onClick={() => setQuickOpen(false)}>添加照片 / 回忆</Link>
           </div>
         )}
       </div>

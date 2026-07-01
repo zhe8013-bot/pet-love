@@ -87,8 +87,11 @@ export function LifePage() {
   useEffect(() => { void loadEntries() }, [loadEntries])
   useEffect(() => {
     const next = searchParams.get('new')
+    if (next === 'feeding') setCareOpen('feeding')
+    if (next === 'water') setCareOpen('water')
     if (next === 'consumption') setConsumptionOpen(true)
     if (next === 'weight') setWeightOpen(true)
+    if (next === 'photo') setPhotoOpen(true)
   }, [searchParams])
 
   const total = entries.reduce((sum, item) => sum + item.cost, 0)

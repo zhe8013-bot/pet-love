@@ -101,6 +101,23 @@ describe('PetPlanet app', () => {
     expect(await screen.findByRole('button', { name: '记录体重' })).toBeInTheDocument()
   })
 
+  it('offers one complete global quick record menu', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(await screen.findByRole('button', { name: '快速记录' }))
+    const menu = screen.getByRole('menu', { name: '快速记录菜单' })
+    expect(within(menu).getAllByRole('link').map((link) => link.textContent)).toEqual([
+      '记录喂食',
+      '记录饮水',
+      '记录体重',
+      '记录消耗',
+      '新增病历',
+      '添加照片 / 回忆',
+    ])
+    expect(within(menu).getByRole('link', { name: '记录喂食' })).toHaveAttribute('href', '/daily?new=feeding')
+  })
+
   it('adds a medical record from the health page', async () => {
     const user = userEvent.setup()
     render(<App />)
