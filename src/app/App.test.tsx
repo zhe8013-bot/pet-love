@@ -269,14 +269,17 @@ describe('PetPlanet app', () => {
     expect(window.location.search).toBe('?new=weight')
   })
 
-  it('opens memories as a 2D album and keeps 3D optional', async () => {
+  it('keeps memories in 2D and shows the future 3D entry as a preview only', async () => {
     window.history.replaceState({}, '', '/memories')
     render(<App />)
 
     expect(await screen.findByRole('heading', { name: '生活回忆' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: '成长概览' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: '闪光回忆' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: '季节时间线' })).toBeInTheDocument()
     expect(screen.getByRole('region', { name: '2D 回忆画廊' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: '2D 相册' })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('button', { name: '3D 星河' })).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByRole('region', { name: '未来 3D 记忆星河' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '3D 星河' })).not.toBeInTheDocument()
   })
 
   it('opens the add-memory form from a deep link', async () => {

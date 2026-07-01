@@ -1,27 +1,19 @@
-import { CalendarDots, Plus, Sparkle, Star } from '@phosphor-icons/react'
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { CalendarDots, Camera, Plus, Sparkle, Star } from '@phosphor-icons/react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { usePetData } from '../../data/PetDataProvider'
 import type { Memory } from '../../domain/types'
 import { MemoryForm } from './MemoryForm'
-import { seasonForDate, type MemorySceneMode } from './sceneLayout'
+import { seasonForDate } from './sceneLayout'
 
-const MemoryUniverse = lazy(() => import('./MemoryUniverse').then((module) => ({
-  default: module.MemoryUniverse,
-})))
-
-const canUseWebGL = () =>
-  typeof window !== 'undefined' && typeof window.WebGLRenderingContext !== 'undefined'
+const dayInMilliseconds = 86400000
 
 export function MemoryPage() {
   const { currentPet, currentPetId, repository } = usePetData()
   const [searchParams, setSearchParams] = useSearchParams()
   const [memories, setMemories] = useState<Memory[]>([])
-  const [mode, setMode] = useState<MemorySceneMode>('growth')
   const [selected, setSelected] = useState<Memory>()
   const [formOpen, setFormOpen] = useState(false)
-  const [reducedMotion, setReducedMotion] = useState(false)
-  const webgl = useMemo(canUseWebGL, [])
 
   const loadMemories = async () => {
     if (!currentPetId) return
@@ -38,80 +30,74 @@ export function MemoryPage() {
     if (searchParams.get('new') === '1') setFormOpen(true)
   }, [searchParams])
 
-  useEffect(() => {
-    const media = window.matchMedia?.('(prefers-reduced-motion: reduce)')
-    if (!media) return
-    setReducedMotion(media.matches)
-    const listener = () => setReducedMotion(media.matches)
-    media.addEventListener?.('change', listener)
-    return () => media.removeEventListener?.('change', listener)
-  }, [])
-
   const closeForm = () => {
     setFormOpen(false)
     if (searchParams.has('new')) setSearchParams({})
   }
 
-  const isAlbum = mode === 'growth'
+  const highlights = memories.filter((memory) => memory.isHighlight)
+  const latestHighlight = highlights.at(-1)
+  const photoCount = memories.reduce((sum, memory) => sum + memory.photos.length, 0)
+  const firstMemoryDate = memories.map((memory) => memory.occurredAt).sort()[0]
+  const growthDays = firstMemoryDate
+    ? Math.max(1, Math.floor((Date.now() - new Date(`${firstMemoryDate}T00:00:00`).getTime()) / dayInMilliseconds) + 1)
+    : 0
+  const chapters = useMemo(() => {
+    const groups = new Map<string, number>()
+    memories.slice().reverse().forEach((memory) => {
+      const label = `${memory.occurredAt.slice(0, 4)} · ${seasonForDate(memory.occurredAt)}季`
+      groups.set(label, (groups.get(label) ?? 0) + 1)
+    })
+    return Array.from(groups, ([label, count]) => ({ label, count }))
+  }, [memories])
+  const futurePhotos = memories.slice().reverse().flatMap((memory) => memory.photos).slice(0, 3)
 
   return (
-    <div className={`memory-page memory-mode-${mode}`}>
-      {!isAlbum && (
-        <div className="memory-scene" aria-hidden={webgl ? 'true' : undefined}>
-          {webgl ? (
-            <Suspense fallback={<div className="memory-scene-loading">正在点亮回忆星河…</div>}>
-              <MemoryUniverse
-                memories={memories}
-                mode="galaxy"
-                selectedId={selected?.id}
-                onSelect={setSelected}
-                reducedMotion={reducedMotion}
-              />
-            </Suspense>
-          ) : (
-            <section className="memory-fallback" aria-label="2D 回忆画廊">
-              {memories.map((memory) => (
-                <button
-                  key={memory.id}
-                  aria-label={`查看回忆：${memory.note}`}
-                  onClick={() => setSelected(memory)}
-                >
-                  <img src={memory.photos[0]} alt="" />
-                </button>
-              ))}
-            </section>
-          )}
-        </div>
-      )}
-
+    <div className="memory-page memory-mode-growth">
       <header className="memory-header">
         <div>
-          <p className="eyebrow">{currentPet?.name ?? '宠物'} · {isAlbum ? 'LIFE ALBUM' : 'LANTERN GARDEN'}</p>
-          <h1>{isAlbum ? '生活回忆' : '记忆星河'}</h1>
-          <p>{isAlbum ? '把那些普通又珍贵的日子，收进一册会继续生长的相册。' : '拖动探索，靠近每一盏属于你们的灯火。'}</p>
+          <p className="eyebrow">{currentPet?.name ?? '宠物'} · LIFE ALBUM</p>
+          <h1>生活回忆</h1>
+          <p>把那些普通又珍贵的日子，收进一册会继续生长的相册。</p>
         </div>
         <div className="memory-actions">
-          <div className="mode-switch" aria-label="记忆展示模式">
-            <button
-              aria-pressed={isAlbum}
-              className={isAlbum ? 'active' : ''}
-              onClick={() => setMode('growth')}
-            >
-              <CalendarDots size={17} />2D 相册
-            </button>
-            <button
-              aria-pressed={!isAlbum}
-              className={!isAlbum ? 'active' : ''}
-              onClick={() => setMode('galaxy')}
-            >
-              <Sparkle size={17} />3D 星河
-            </button>
-          </div>
           <button className="button memory-add" onClick={() => setFormOpen(true)}><Plus size={18} />添加回忆</button>
         </div>
       </header>
 
-      {isAlbum && (
+      <div className="memory-page-content">
+        <section className="memory-overview" aria-label="成长概览">
+          <article><span><Camera size={19} />生活照片</span><strong>{photoCount}<small> 张</small></strong></article>
+          <article><span><CalendarDots size={19} />陪伴时光</span><strong>{growthDays}<small> 天</small></strong></article>
+          <article><span><Star size={19} />闪光回忆</span><strong>{highlights.length}<small> 段</small></strong></article>
+        </section>
+
+        <section className="memory-highlight" aria-label="闪光回忆">
+          <div className="memory-highlight-copy">
+            <span><Star size={15} weight="fill" />闪光回忆</span>
+            <h2>{latestHighlight?.note ?? '下一段闪光时刻，等你们一起写下。'}</h2>
+            <p>{latestHighlight ? `${latestHighlight.occurredAt} · ${latestHighlight.mood}` : '可以在添加回忆时，把特别的一天标记为闪光回忆。'}</p>
+          </div>
+          {(latestHighlight?.photos[0] ?? currentPet?.avatar) && (
+            <img src={latestHighlight?.photos[0] ?? currentPet?.avatar} alt="" />
+          )}
+        </section>
+
+        <section className="memory-chapters" aria-label="季节时间线">
+          <div className="album-heading">
+            <div>
+              <span>SEASONAL CHAPTERS</span>
+              <h2>沿着季节，翻回共同生活</h2>
+            </div>
+            <strong>{chapters.length} 个章节</strong>
+          </div>
+          <div className="memory-chapter-list">
+            {chapters.map((chapter) => (
+              <article key={chapter.label}><CalendarDots size={18} /><strong>{chapter.label}</strong><span>{chapter.count} 段时光</span></article>
+            ))}
+          </div>
+        </section>
+
         <section className="memory-album" aria-label="2D 回忆画廊">
           <div className="album-heading">
             <div>
@@ -137,26 +123,19 @@ export function MemoryPage() {
             ))}
           </div>
         </section>
-      )}
 
-      {!isAlbum && selected && (
-        <aside className="memory-detail" aria-live="polite">
-          <div className="memory-detail-photo"><img src={selected.photos[0]} alt={selected.note} /></div>
+        <section className="future-memory-entry" aria-label="未来 3D 记忆星河">
           <div>
-            <span className="memory-date">{selected.occurredAt} · {seasonForDate(selected.occurredAt)}</span>
-            <h2>{selected.note}</h2>
-            <p><span>{selected.mood}</span>{selected.isHighlight && <b><Star size={13} weight="fill" />闪光回忆</b>}</p>
+            <span><Sparkle size={16} weight="fill" />未来入口 · 2.5D 预览</span>
+            <h2>未来 3D 记忆星河</h2>
+            <p>今后每张生活照片都可以成为一盏回忆灯。当前阶段只保留入口与视觉预告，不加载真实 3D 场景。</p>
+            <strong>COMING LATER</strong>
           </div>
-        </aside>
-      )}
-
-      {!isAlbum && (
-        <footer className="season-ribbon">
-          {['春', '夏', '秋', '冬'].map((season) => <span key={season}>{season}</span>)}
-          <i />
-          <strong>{memories.length} 段时光</strong>
-        </footer>
-      )}
+          <div className="future-memory-photos" aria-hidden="true">
+            {futurePhotos.map((photo, index) => <img key={`${photo}-${index}`} src={photo} alt="" />)}
+          </div>
+        </section>
+      </div>
 
       {formOpen && (
         <MemoryForm
