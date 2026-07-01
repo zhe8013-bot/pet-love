@@ -1,11 +1,16 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { createSeedState } from '../data/seed'
 import { App } from './App'
 
 describe('PetPlanet app', () => {
   beforeEach(() => {
     localStorage.clear()
+    const state = createSeedState()
+    const month = new Date().toISOString().slice(0, 7)
+    state.consumptions = state.consumptions.map((entry) => ({ ...entry, month }))
+    localStorage.setItem('petplanet:data:v1', JSON.stringify(state))
     window.history.replaceState({}, '', '/')
   })
 
