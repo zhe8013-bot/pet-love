@@ -156,7 +156,7 @@ export function LifePage() {
       <header className="page-header life-page-header">
         <div>
           <p className="eyebrow">{currentPet?.name ?? '宠物'} · DAILY RHYTHM</p>
-          <h1>生活记录</h1>
+          <h1>日常记录</h1>
           <p>把每一次吃饭、喝水和成长变化，慢慢收进共同生活的轨迹里。</p>
         </div>
         <div className="header-actions">

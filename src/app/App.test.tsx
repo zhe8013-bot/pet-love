@@ -88,7 +88,7 @@ describe('PetPlanet app', () => {
     expect(screen.getByText('月度体重已稍后提醒')).toBeInTheDocument()
   })
 
-  it('navigates to health and life records from the primary navigation', async () => {
+  it('navigates to health and daily records from the primary navigation', async () => {
     const user = userEvent.setup()
     render(<App />)
 
@@ -96,8 +96,8 @@ describe('PetPlanet app', () => {
     expect(await screen.findByRole('heading', { name: '健康档案' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '新增病历' })).toBeInTheDocument()
 
-    await user.click(screen.getByRole('link', { name: '生活' }))
-    expect(await screen.findByRole('heading', { name: '生活记录' })).toBeInTheDocument()
+    await user.click(screen.getByRole('link', { name: '日常' }))
+    expect(await screen.findByRole('heading', { name: '日常记录' })).toBeInTheDocument()
     expect(await screen.findByRole('button', { name: '记录体重' })).toBeInTheDocument()
   })
 
@@ -143,7 +143,7 @@ describe('PetPlanet app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('link', { name: '生活' }))
+    await user.click(screen.getByRole('link', { name: '日常' }))
     await user.click(await screen.findByRole('button', { name: '记录消耗' }))
 
     const dialog = screen.getByRole('dialog', { name: '记录消耗' })
@@ -208,8 +208,8 @@ describe('PetPlanet app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('link', { name: '生活' }))
-    await screen.findByRole('heading', { name: '生活记录' })
+    await user.click(screen.getByRole('link', { name: '日常' }))
+    await screen.findByRole('heading', { name: '日常记录' })
     await user.click(screen.getByRole('button', { name: '只看洗澡' }))
     expect(screen.getByText('2 次')).toBeInTheDocument()
     expect(screen.queryByText('6 kg')).not.toBeInTheDocument()
@@ -220,21 +220,33 @@ describe('PetPlanet app', () => {
     expect(await screen.findByText('这个筛选下还没有记录')).toBeInTheDocument()
   })
 
-  it('uses five app routes and switches pets globally', async () => {
+  it('uses the new home, daily, health, memories and profile navigation', async () => {
     const user = userEvent.setup()
     render(<App />)
 
     expect(await screen.findByRole('heading', { name: '今天也一起好好生活' })).toBeInTheDocument()
     const navigation = screen.getByRole('navigation', { name: '主导航' })
-    expect(within(navigation).getAllByRole('link')).toHaveLength(5)
-    expect(within(navigation).getByRole('link', { name: '回忆' })).toHaveAttribute('href', '/memories')
+    expect(within(navigation).getAllByRole('link').map((link) => link.textContent)).toEqual([
+      '首页', '日常', '健康', '回忆', '档案',
+    ])
+    expect(within(navigation).getByRole('link', { name: '日常' })).toHaveAttribute('href', '/daily')
+    expect(within(navigation).getByRole('link', { name: '档案' })).toHaveAttribute('href', '/profile')
 
-    await user.click(within(navigation).getByRole('link', { name: '宠物' }))
+    await user.click(within(navigation).getByRole('link', { name: '档案' }))
     expect(await screen.findByRole('heading', { name: '宠物档案' })).toBeInTheDocument()
     expect(screen.getByText('豆包的照护档案')).toBeInTheDocument()
 
     await user.selectOptions(screen.getByLabelText('当前宠物'), 'pet-mili')
     expect(await screen.findByText('米粒的照护档案')).toBeInTheDocument()
+  })
+
+  it('keeps legacy life and pets URLs working', async () => {
+    window.history.replaceState({}, '', '/life?new=weight')
+    render(<App />)
+
+    expect(await screen.findByRole('dialog', { name: '记录体重' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/daily')
+    expect(window.location.search).toBe('?new=weight')
   })
 
   it('opens memories as a 2D album and keeps 3D optional', async () => {

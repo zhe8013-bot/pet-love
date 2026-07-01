@@ -14,10 +14,10 @@ import { usePetData } from '../data/PetDataProvider'
 
 const navItems = [
   { to: '/', label: '首页', icon: House },
+  { to: '/daily', label: '日常', icon: ChartLineUp },
   { to: '/health', label: '健康', icon: FirstAidKit },
-  { to: '/life', label: '生活', icon: ChartLineUp },
   { to: '/memories', label: '回忆', icon: Images },
-  { to: '/pets', label: '宠物', icon: IdentificationCard },
+  { to: '/profile', label: '档案', icon: IdentificationCard },
 ]
 
 function AppTopbar() {
