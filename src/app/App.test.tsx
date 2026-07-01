@@ -118,6 +118,27 @@ describe('PetPlanet app', () => {
     expect(within(manager).getByText('月度体重已稍后提醒')).toBeInTheDocument()
   })
 
+  it('dismisses an automatic example reminder without deleting source data', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState({}, '', '/daily?section=reminders')
+    const { unmount } = render(<App />)
+    const manager = await screen.findByRole('region', { name: '待办与提醒' })
+
+    await user.click(within(manager).getByRole('button', { name: '删除驱虫提醒' }))
+    const confirm = screen.getByRole('dialog', { name: '移除这条提醒？' })
+    expect(within(confirm).getByText('只会从提醒列表中移除，不会删除宠物档案或病历。')).toBeInTheDocument()
+    await user.click(within(confirm).getByRole('button', { name: '确认删除' }))
+    expect(within(manager).queryByText('驱虫')).not.toBeInTheDocument()
+    const stored = JSON.parse(localStorage.getItem('petplanet:data:v1') ?? '{}') as ReturnType<typeof createSeedState>
+    expect(stored.pets.find((pet) => pet.id === 'pet-doubao')?.reminder).toBe('驱虫')
+
+    unmount()
+    window.history.replaceState({}, '', '/')
+    render(<App />)
+    const preview = await screen.findByRole('region', { name: '今日关键提醒' })
+    await waitFor(() => expect(within(preview).queryByText('驱虫')).not.toBeInTheDocument())
+  })
+
   it('navigates to health and daily records from the primary navigation', async () => {
     const user = userEvent.setup()
     render(<App />)

@@ -32,6 +32,7 @@ export function HomePage() {
   const [petFormOpen, setPetFormOpen] = useState(false)
   const [taskStates, setTaskStates] = useState<Record<string, TaskStatus>>({})
   const [customTodos, setCustomTodos] = useState<CustomTodo[]>([])
+  const [dismissedReminderKeys, setDismissedReminderKeys] = useState<string[]>([])
   const month = new Date().toISOString().slice(0, 7)
   const monthLabel = new Intl.DateTimeFormat('zh-CN', { month: 'long' }).format(new Date())
 
@@ -45,6 +46,8 @@ export function HomePage() {
     setTaskStates(stored ? JSON.parse(stored) as Record<string, TaskStatus> : {})
     const storedTodos = localStorage.getItem('petplanet:custom-todos:' + currentPetId)
     setCustomTodos(storedTodos ? JSON.parse(storedTodos) as CustomTodo[] : [])
+    const storedDismissed = localStorage.getItem('petplanet:dismissed-reminders:' + currentPetId)
+    setDismissedReminderKeys(storedDismissed ? JSON.parse(storedDismissed) as string[] : [])
     void Promise.all([
       repository.listWeights(currentPetId),
       repository.listMedicalRecords(currentPetId),
@@ -69,8 +72,9 @@ export function HomePage() {
     .filter((memory) => memory.occurredAt.startsWith(localDate()))
     .reduce((sum, memory) => sum + memory.photos.length, 0)
   const tasks = useMemo(
-    () => buildReminderTasks(currentPet, medicalRecords, customTodos),
-    [currentPet, customTodos, medicalRecords],
+    () => buildReminderTasks(currentPet, medicalRecords, customTodos)
+      .filter((task) => !task.dismissKey || !dismissedReminderKeys.includes(task.dismissKey)),
+    [currentPet, customTodos, dismissedReminderKeys, medicalRecords],
   )
 
   const completedCount = tasks.filter((task) => taskStates[task.id] === 'done').length

@@ -16,6 +16,7 @@ export interface ReminderTask {
   due: string
   sortAt: number
   isCustom: boolean
+  dismissKey?: string
 }
 
 const dayInMilliseconds = 86400000
@@ -62,6 +63,7 @@ export const buildReminderTasks = (
       detail: `${pet.name}的日常照护提醒`,
       sortAt: systemDueTimestamp(pet.reminderDate),
       isCustom: false,
+      dismissKey: `profile:${pet.reminder}:${pet.reminderDate}`,
     },
     ...(followUp ? [{
       id: 'follow-up',
@@ -70,6 +72,7 @@ export const buildReminderTasks = (
       detail: followUp.diagnosis,
       sortAt: systemDueTimestamp(followUp.followUpDate),
       isCustom: false,
+      dismissKey: `follow-up:${followUp.id}:${followUp.followUpDate}`,
     }] : []),
     {
       id: 'weight',
@@ -78,6 +81,7 @@ export const buildReminderTasks = (
       detail: '更新一次体重，保持趋势连续',
       sortAt: systemDueTimestamp('本月结束前'),
       isCustom: false,
+      dismissKey: `weight:${new Date().toISOString().slice(0, 7)}`,
     },
   ]
   const customTasks: ReminderTask[] = customTodos.map((todo) => ({

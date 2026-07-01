@@ -20,7 +20,7 @@ import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { usePetData } from '../../data/PetDataProvider'
 import type { CareEvent, CareEventKind, ConsumptionEntry, MedicalRecord, Memory, WeightEntry } from '../../domain/types'
 import { TodoForm } from '../reminders/TodoForm'
-import { buildReminderTasks, type CustomTodo, type TaskStatus } from '../reminders/reminderModel'
+import { buildReminderTasks, type CustomTodo, type ReminderTask, type TaskStatus } from '../reminders/reminderModel'
 import { CareEventForm } from './CareEventForm'
 import { ConsumptionForm } from './ConsumptionForm'
 import { LifePhotoForm } from './LifePhotoForm'
@@ -31,6 +31,7 @@ type DeleteTarget =
   | { kind: 'weight'; item: WeightEntry }
   | { kind: 'care'; item: CareEvent }
   | { kind: 'todo'; item: CustomTodo }
+  | { kind: 'reminder'; item: ReminderTask }
 
 const localDate = (date = new Date()) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
@@ -58,6 +59,7 @@ export function LifePage() {
   const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([])
   const [taskStates, setTaskStates] = useState<Record<string, TaskStatus>>({})
   const [customTodos, setCustomTodos] = useState<CustomTodo[]>([])
+  const [dismissedReminderKeys, setDismissedReminderKeys] = useState<string[]>([])
   const [consumptionOpen, setConsumptionOpen] = useState(false)
   const [weightOpen, setWeightOpen] = useState(false)
   const [careOpen, setCareOpen] = useState<CareEventKind | null>(null)
@@ -101,8 +103,10 @@ export function LifePage() {
     if (!currentPetId) return
     const storedStates = localStorage.getItem(`petplanet:tasks:${currentPetId}`)
     const storedTodos = localStorage.getItem(`petplanet:custom-todos:${currentPetId}`)
+    const storedDismissed = localStorage.getItem(`petplanet:dismissed-reminders:${currentPetId}`)
     setTaskStates(storedStates ? JSON.parse(storedStates) as Record<string, TaskStatus> : {})
     setCustomTodos(storedTodos ? JSON.parse(storedTodos) as CustomTodo[] : [])
+    setDismissedReminderKeys(storedDismissed ? JSON.parse(storedDismissed) as string[] : [])
   }, [currentPetId])
   useEffect(() => {
     const next = searchParams.get('new')
@@ -123,8 +127,9 @@ export function LifePage() {
   const waterTotal = careEvents.filter((item) => item.kind === 'water').reduce((sum, item) => sum + item.amount, 0)
   const photoMemories = [...memories].filter((item) => item.photos.length > 0).sort((a, b) => b.occurredAt.localeCompare(a.occurredAt))
   const reminderTasks = useMemo(
-    () => buildReminderTasks(currentPet, medicalRecords, customTodos),
-    [currentPet, customTodos, medicalRecords],
+    () => buildReminderTasks(currentPet, medicalRecords, customTodos)
+      .filter((task) => !task.dismissKey || !dismissedReminderKeys.includes(task.dismissKey)),
+    [currentPet, customTodos, dismissedReminderKeys, medicalRecords],
   )
   const completedReminderCount = reminderTasks.filter((task) => taskStates[task.id] === 'done').length
   const remindersTargeted = searchParams.get('section') === 'reminders'
@@ -175,11 +180,27 @@ export function LifePage() {
     localStorage.setItem(`petplanet:tasks:${currentPetId}`, JSON.stringify(nextStates))
   }
 
+  const dismissReminder = (task: ReminderTask) => {
+    if (!task.dismissKey) return
+    const nextDismissed = [...new Set([...dismissedReminderKeys, task.dismissKey])]
+    const nextStates = { ...taskStates }
+    delete nextStates[task.id]
+    setDismissedReminderKeys(nextDismissed)
+    setTaskStates(nextStates)
+    localStorage.setItem(`petplanet:dismissed-reminders:${currentPetId}`, JSON.stringify(nextDismissed))
+    localStorage.setItem(`petplanet:tasks:${currentPetId}`, JSON.stringify(nextStates))
+  }
+
   const removeTarget = async () => {
     if (!deleteTarget) return
     setDeleting(true)
     setDeleteError('')
     try {
+      if (deleteTarget.kind === 'reminder') {
+        dismissReminder(deleteTarget.item)
+        setDeleteTarget(null)
+        return
+      }
       if (deleteTarget.kind === 'todo') {
         removeTodo(deleteTarget.item.id)
         setDeleteTarget(null)
@@ -200,13 +221,19 @@ export function LifePage() {
     }
   }
 
-  const deleteTitle = deleteTarget?.kind === 'todo'
+  const deleteTitle = deleteTarget?.kind === 'reminder'
+    ? '移除这条提醒？'
+    : deleteTarget?.kind === 'todo'
     ? '删除这条待办？'
     : deleteTarget?.kind === 'consumption'
     ? '删除这条消耗记录？'
     : deleteTarget?.kind === 'weight'
       ? '删除这条体重记录？'
       : '删除这条照护记录？'
+
+  const deleteDescription = deleteTarget?.kind === 'reminder'
+    ? '只会从提醒列表中移除，不会删除宠物档案或病历。'
+    : '删除后无法恢复，相关统计会立即重新计算。'
 
   return (
     <div className="page life-page">
@@ -271,6 +298,15 @@ export function LifePage() {
                           className="reminder-delete"
                           aria-label={`删除${task.title}待办`}
                           onClick={() => { setDeleteError(''); setDeleteTarget({ kind: 'todo', item: customTodo }) }}
+                        >
+                          <Trash size={15} />
+                        </button>
+                      )}
+                      {!customTodo && task.dismissKey && (
+                        <button
+                          className="reminder-delete"
+                          aria-label={`删除${task.title}提醒`}
+                          onClick={() => { setDeleteError(''); setDeleteTarget({ kind: 'reminder', item: task }) }}
                         >
                           <Trash size={15} />
                         </button>
@@ -400,7 +436,7 @@ export function LifePage() {
         </>
       )}
 
-      {deleteTarget && <ConfirmDialog title={deleteTitle} description="删除后无法恢复，相关统计会立即重新计算。" pending={deleting} error={deleteError} onCancel={() => setDeleteTarget(null)} onConfirm={() => void removeTarget()} />}
+      {deleteTarget && <ConfirmDialog title={deleteTitle} description={deleteDescription} pending={deleting} error={deleteError} onCancel={() => setDeleteTarget(null)} onConfirm={() => void removeTarget()} />}
       {consumptionOpen && <ConsumptionForm month={month} onClose={closeComposer} onSaved={() => void loadEntries()} />}
       {weightOpen && <WeightForm onClose={closeComposer} onSaved={() => void loadEntries()} />}
       {careOpen && <CareEventForm kind={careOpen} onClose={closeComposer} onSaved={handleCareSaved} />}
