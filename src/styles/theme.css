@@ -781,6 +781,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   background: #fff0e9;
   font-size: 12px;
   font-weight: 850;
+  text-decoration: none;
 }
 
 .add-todo-button:hover {
@@ -1942,6 +1943,79 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   margin-bottom: 30px;
 }
 
+.daily-reminders {
+  margin-bottom: 20px;
+  padding: 28px 30px;
+  border: 1px solid #e5dbea;
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(247, 242, 251, .96), rgba(255, 253, 249, .96));
+  box-shadow: 0 20px 54px rgba(63, 45, 72, .075);
+  scroll-margin-top: 92px;
+}
+
+.daily-reminders.is-targeted {
+  border-color: #cbbce2;
+  box-shadow: 0 24px 62px rgba(83, 61, 104, .13), inset 0 0 0 1px rgba(203, 188, 226, .28);
+}
+
+.reminder-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.reminder-heading-actions > span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.reminder-manager-list {
+  margin-top: 18px;
+  display: grid;
+}
+
+.daily-reminders .care-row {
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+}
+
+.reminder-manager-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.reminder-manager-actions > button {
+  min-width: 54px;
+  min-height: 34px;
+  color: var(--peach-dark);
+  border: 0;
+  border-radius: 11px;
+  background: #fff0e9;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.reminder-manager-actions > button:nth-child(2) {
+  color: var(--muted);
+  background: #f5f2ef;
+}
+
+.reminder-manager-actions > b {
+  color: #6e6576;
+  font-size: 11px;
+}
+
+.reminder-manager-actions > .reminder-delete {
+  min-width: 34px;
+  width: 34px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: #956355;
+  background: #f8eee9;
+}
+
 .daily-care-hub {
   position: relative;
   padding: 30px;
@@ -2374,6 +2448,37 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
   .life-page-header h1 {
     font-size: 39px;
+  }
+
+  .daily-reminders {
+    padding: 20px 16px;
+    border-radius: 25px;
+  }
+
+  .daily-reminders .daily-care-heading {
+    align-items: flex-start;
+  }
+
+  .reminder-heading-actions {
+    display: grid;
+    justify-items: end;
+    gap: 8px;
+  }
+
+  .reminder-heading-actions .button {
+    min-height: 38px;
+    padding-inline: 12px;
+    font-size: 12px;
+  }
+
+  .daily-reminders .care-row {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .reminder-manager-actions {
+    grid-column: 2;
+    margin-top: 7px;
+    flex-wrap: wrap;
   }
 
   .daily-care-hub {

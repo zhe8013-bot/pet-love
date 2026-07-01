@@ -1,13 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { FormField, TextAreaField } from '../../components/FormField'
 import { Modal } from '../../components/Modal'
-
-export interface CustomTodo {
-  id: string
-  title: string
-  description: string
-  dueAt: string
-}
+import type { CustomTodo } from './reminderModel'
 
 export function TodoForm({
   onClose,

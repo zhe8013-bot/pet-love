@@ -14,9 +14,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { usePetData } from '../../data/PetDataProvider'
 import type { CareEvent, ConsumptionEntry, MedicalRecord, Memory, WeightEntry } from '../../domain/types'
-import { buildReminderTasks, type TaskStatus } from '../reminders/reminderModel'
+import { buildReminderTasks, type CustomTodo, type TaskStatus } from '../reminders/reminderModel'
 import { PetForm } from './PetForm'
-import type { CustomTodo } from './TodoForm'
 
 const localDate = (date = new Date()) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`

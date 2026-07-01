@@ -57,32 +57,43 @@ describe('PetPlanet app', () => {
     expect(within(reminderPreview).queryByRole('button', { name: '完成驱虫' })).not.toBeInTheDocument()
   })
 
-  it('adds and persists a todo for the current pet', async () => {
+  it('manages reminders from Daily', async () => {
     const user = userEvent.setup()
     const { unmount } = render(<App />)
 
-    expect(await screen.findByRole('heading', { name: '今日关键提醒' })).toBeInTheDocument()
-    expect(screen.queryByText('今日照护')).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: '添加待办' }))
+    await user.click(await screen.findByRole('link', { name: '全部提醒' }))
+    const manager = await screen.findByRole('region', { name: '待办与提醒' })
+    expect(window.location.pathname).toBe('/daily')
+    expect(window.location.search).toBe('?section=reminders')
+    await user.click(within(manager).getByRole('button', { name: '添加待办' }))
 
     const dialog = screen.getByRole('dialog', { name: '添加待办' })
     await user.type(within(dialog).getByLabelText('待办事项'), '补充益生菌')
     await user.type(within(dialog).getByLabelText('描述'), '晚饭后半袋')
-    await user.type(within(dialog).getByLabelText('截至时间'), '2026-07-01T18:30')
+    await user.type(within(dialog).getByLabelText('截至时间'), '2026-07-02T18:30')
     await user.click(within(dialog).getByRole('button', { name: '保存待办' }))
 
-    expect(await screen.findByText('补充益生菌')).toBeInTheDocument()
-    expect(screen.getByText('晚饭后半袋')).toBeInTheDocument()
+    expect(await within(manager).findByText('补充益生菌')).toBeInTheDocument()
+    expect(within(manager).getByText('晚饭后半袋')).toBeInTheDocument()
+    await user.click(within(manager).getByRole('button', { name: '完成补充益生菌' }))
+    expect(within(manager).getByText('补充益生菌已完成')).toBeInTheDocument()
     unmount()
     render(<App />)
-    expect(await screen.findByText('补充益生菌')).toBeInTheDocument()
+    const restoredManager = await screen.findByRole('region', { name: '待办与提醒' })
+    expect(await within(restoredManager).findByText('补充益生菌')).toBeInTheDocument()
+    await user.click(within(restoredManager).getByRole('button', { name: '删除补充益生菌待办' }))
+    const confirm = screen.getByRole('dialog', { name: '删除这条待办？' })
+    await user.click(within(confirm).getByRole('button', { name: '确认删除' }))
+    expect(within(restoredManager).queryByText('补充益生菌')).not.toBeInTheDocument()
   })
 
-  it('validates todos and keeps them scoped to the current pet', async () => {
+  it('keeps Daily reminders validated and scoped to the current pet', async () => {
     const user = userEvent.setup()
+    window.history.replaceState({}, '', '/daily?section=reminders')
     render(<App />)
 
-    await user.click(await screen.findByRole('button', { name: '添加待办' }))
+    const manager = await screen.findByRole('region', { name: '待办与提醒' })
+    await user.click(within(manager).getByRole('button', { name: '添加待办' }))
     await user.click(screen.getByRole('button', { name: '保存待办' }))
     expect(screen.getByRole('alert')).toHaveTextContent('请填写待办事项和截至时间')
 
@@ -91,19 +102,20 @@ describe('PetPlanet app', () => {
     await user.type(within(dialog).getByLabelText('截至时间'), '2026-07-01T18:30')
     await user.click(within(dialog).getByRole('button', { name: '保存待办' }))
     await user.selectOptions(screen.getByLabelText('当前宠物'), 'pet-mili')
-    expect(screen.queryByText('补充益生菌')).not.toBeInTheDocument()
+    await waitFor(() => expect(within(manager).queryByText('补充益生菌')).not.toBeInTheDocument())
   })
 
-  it('lets the user complete and postpone care tasks', async () => {
+  it('lets the user complete and postpone reminders from Daily', async () => {
     const user = userEvent.setup()
+    window.history.replaceState({}, '', '/daily?section=reminders')
     render(<App />)
 
-    await screen.findByRole('heading', { name: '今天也一起好好生活' })
-    await user.click(screen.getByRole('button', { name: '完成驱虫' }))
-    expect(screen.getByText('驱虫已完成')).toBeInTheDocument()
+    const manager = await screen.findByRole('region', { name: '待办与提醒' })
+    await user.click(within(manager).getByRole('button', { name: '完成驱虫' }))
+    expect(within(manager).getByText('驱虫已完成')).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: '稍后处理月度体重' }))
-    expect(screen.getByText('月度体重已稍后提醒')).toBeInTheDocument()
+    await user.click(within(manager).getByRole('button', { name: '稍后处理月度体重' }))
+    expect(within(manager).getByText('月度体重已稍后提醒')).toBeInTheDocument()
   })
 
   it('navigates to health and daily records from the primary navigation', async () => {

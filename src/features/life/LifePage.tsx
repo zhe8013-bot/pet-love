@@ -1,9 +1,12 @@
 import {
+  Bell,
   BowlFood,
   Camera,
   CaretLeft,
   CaretRight,
   ChartLineUp,
+  Check,
+  ClockCountdown,
   Drop,
   Plus,
   Scales,
@@ -15,7 +18,9 @@ import { useSearchParams } from 'react-router-dom'
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { usePetData } from '../../data/PetDataProvider'
-import type { CareEvent, CareEventKind, ConsumptionEntry, Memory, WeightEntry } from '../../domain/types'
+import type { CareEvent, CareEventKind, ConsumptionEntry, MedicalRecord, Memory, WeightEntry } from '../../domain/types'
+import { TodoForm } from '../reminders/TodoForm'
+import { buildReminderTasks, type CustomTodo, type TaskStatus } from '../reminders/reminderModel'
 import { CareEventForm } from './CareEventForm'
 import { ConsumptionForm } from './ConsumptionForm'
 import { LifePhotoForm } from './LifePhotoForm'
@@ -25,6 +30,7 @@ type DeleteTarget =
   | { kind: 'consumption'; item: ConsumptionEntry }
   | { kind: 'weight'; item: WeightEntry }
   | { kind: 'care'; item: CareEvent }
+  | { kind: 'todo'; item: CustomTodo }
 
 const localDate = (date = new Date()) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
@@ -49,10 +55,14 @@ export function LifePage() {
   const [weights, setWeights] = useState<WeightEntry[]>([])
   const [careEvents, setCareEvents] = useState<CareEvent[]>([])
   const [memories, setMemories] = useState<Memory[]>([])
+  const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([])
+  const [taskStates, setTaskStates] = useState<Record<string, TaskStatus>>({})
+  const [customTodos, setCustomTodos] = useState<CustomTodo[]>([])
   const [consumptionOpen, setConsumptionOpen] = useState(false)
   const [weightOpen, setWeightOpen] = useState(false)
   const [careOpen, setCareOpen] = useState<CareEventKind | null>(null)
   const [photoOpen, setPhotoOpen] = useState(false)
+  const [todoFormOpen, setTodoFormOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState(localDate)
   const [month, setMonth] = useState(nowMonth)
   const [category, setCategory] = useState('全部')
@@ -67,16 +77,18 @@ export function LifePage() {
     setLoading(true)
     setLoadError('')
     try {
-      const [nextEntries, nextWeights, nextCareEvents, nextMemories] = await Promise.all([
+      const [nextEntries, nextWeights, nextCareEvents, nextMemories, nextMedicalRecords] = await Promise.all([
         repository.listConsumptions(currentPetId, month),
         repository.listWeights(currentPetId),
         repository.listCareEvents(currentPetId, selectedDate),
         repository.listMemories(currentPetId),
+        repository.listMedicalRecords(currentPetId),
       ])
       setEntries(nextEntries)
       setWeights(nextWeights)
       setCareEvents(nextCareEvents)
       setMemories(nextMemories)
+      setMedicalRecords(nextMedicalRecords)
     } catch {
       setLoadError('生活记录暂时没有加载成功，请稍后重试。')
     } finally {
@@ -85,6 +97,13 @@ export function LifePage() {
   }, [currentPetId, month, repository, selectedDate])
 
   useEffect(() => { void loadEntries() }, [loadEntries])
+  useEffect(() => {
+    if (!currentPetId) return
+    const storedStates = localStorage.getItem(`petplanet:tasks:${currentPetId}`)
+    const storedTodos = localStorage.getItem(`petplanet:custom-todos:${currentPetId}`)
+    setTaskStates(storedStates ? JSON.parse(storedStates) as Record<string, TaskStatus> : {})
+    setCustomTodos(storedTodos ? JSON.parse(storedTodos) as CustomTodo[] : [])
+  }, [currentPetId])
   useEffect(() => {
     const next = searchParams.get('new')
     if (next === 'feeding') setCareOpen('feeding')
@@ -103,6 +122,12 @@ export function LifePage() {
   const feedingTotal = careEvents.filter((item) => item.kind === 'feeding').reduce((sum, item) => sum + item.amount, 0)
   const waterTotal = careEvents.filter((item) => item.kind === 'water').reduce((sum, item) => sum + item.amount, 0)
   const photoMemories = [...memories].filter((item) => item.photos.length > 0).sort((a, b) => b.occurredAt.localeCompare(a.occurredAt))
+  const reminderTasks = useMemo(
+    () => buildReminderTasks(currentPet, medicalRecords, customTodos),
+    [currentPet, customTodos, medicalRecords],
+  )
+  const completedReminderCount = reminderTasks.filter((task) => taskStates[task.id] === 'done').length
+  const remindersTargeted = searchParams.get('section') === 'reminders'
 
   const changeMonth = (offset: number) => {
     const date = new Date(`${month}-01T00:00:00`)
@@ -128,11 +153,38 @@ export function LifePage() {
     setMemories((current) => [...current, memory])
   }
 
+  const saveTodo = (todo: CustomTodo) => {
+    const next = [...customTodos, todo].sort((a, b) => a.dueAt.localeCompare(b.dueAt))
+    setCustomTodos(next)
+    localStorage.setItem(`petplanet:custom-todos:${currentPetId}`, JSON.stringify(next))
+  }
+
+  const updateTask = (id: string, status: TaskStatus) => {
+    const next = { ...taskStates, [id]: status }
+    setTaskStates(next)
+    localStorage.setItem(`petplanet:tasks:${currentPetId}`, JSON.stringify(next))
+  }
+
+  const removeTodo = (id: string) => {
+    const nextTodos = customTodos.filter((todo) => todo.id !== id)
+    const nextStates = { ...taskStates }
+    delete nextStates[id]
+    setCustomTodos(nextTodos)
+    setTaskStates(nextStates)
+    localStorage.setItem(`petplanet:custom-todos:${currentPetId}`, JSON.stringify(nextTodos))
+    localStorage.setItem(`petplanet:tasks:${currentPetId}`, JSON.stringify(nextStates))
+  }
+
   const removeTarget = async () => {
     if (!deleteTarget) return
     setDeleting(true)
     setDeleteError('')
     try {
+      if (deleteTarget.kind === 'todo') {
+        removeTodo(deleteTarget.item.id)
+        setDeleteTarget(null)
+        return
+      }
       if (deleteTarget.kind === 'consumption') await repository.removeConsumption(deleteTarget.item.id)
       if (deleteTarget.kind === 'care') await repository.removeCareEvent(deleteTarget.item.id)
       if (deleteTarget.kind === 'weight') {
@@ -148,7 +200,9 @@ export function LifePage() {
     }
   }
 
-  const deleteTitle = deleteTarget?.kind === 'consumption'
+  const deleteTitle = deleteTarget?.kind === 'todo'
+    ? '删除这条待办？'
+    : deleteTarget?.kind === 'consumption'
     ? '删除这条消耗记录？'
     : deleteTarget?.kind === 'weight'
       ? '删除这条体重记录？'
@@ -173,6 +227,61 @@ export function LifePage() {
         <div className="content-state error-state" role="alert"><p>{loadError}</p><button className="button secondary" onClick={() => void loadEntries()}>重新加载</button></div>
       ) : (
         <>
+          <section
+            id="reminders"
+            className={`daily-reminders ${remindersTargeted ? 'is-targeted' : ''}`}
+            aria-labelledby="daily-reminders-title"
+          >
+            <div className="daily-care-heading">
+              <div>
+                <p className="eyebrow">REMINDERS</p>
+                <h2 id="daily-reminders-title">待办与提醒</h2>
+                <p>统一管理 {currentPet?.name} 的今日待办、照护提醒和复诊安排。</p>
+              </div>
+              <div className="reminder-heading-actions">
+                <span>{completedReminderCount}/{reminderTasks.length} 已完成</span>
+                <button className="button primary" onClick={() => setTodoFormOpen(true)}><Plus size={17} />添加待办</button>
+              </div>
+            </div>
+            <div className="reminder-manager-list">
+              {reminderTasks.map((task) => {
+                const status = taskStates[task.id]
+                const customTodo = task.isCustom ? customTodos.find((todo) => todo.id === task.id) : undefined
+                return (
+                  <article key={task.id} className={`care-row ${status ?? ''}`}>
+                    <span className="care-row-icon">
+                      {status === 'done' ? <Check size={18} /> : status === 'later' ? <ClockCountdown size={18} /> : <Bell size={18} />}
+                    </span>
+                    <div>
+                      <strong>{task.title}</strong>
+                      <p>{task.detail}</p>
+                      <time>{task.due}</time>
+                    </div>
+                    <div className="reminder-manager-actions">
+                      {status ? (
+                        <b>{status === 'done' ? `${task.title}已完成` : `${task.title}已稍后提醒`}</b>
+                      ) : (
+                        <>
+                          <button aria-label={`完成${task.title}`} onClick={() => updateTask(task.id, 'done')}>完成</button>
+                          <button aria-label={`稍后处理${task.title}`} onClick={() => updateTask(task.id, 'later')}>稍后</button>
+                        </>
+                      )}
+                      {customTodo && (
+                        <button
+                          className="reminder-delete"
+                          aria-label={`删除${task.title}待办`}
+                          onClick={() => { setDeleteError(''); setDeleteTarget({ kind: 'todo', item: customTodo }) }}
+                        >
+                          <Trash size={15} />
+                        </button>
+                      )}
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          </section>
+
           <section className="daily-care-hub" aria-labelledby="daily-care-title">
             <div className="daily-care-heading">
               <div>
@@ -296,6 +405,7 @@ export function LifePage() {
       {weightOpen && <WeightForm onClose={closeComposer} onSaved={() => void loadEntries()} />}
       {careOpen && <CareEventForm kind={careOpen} onClose={closeComposer} onSaved={handleCareSaved} />}
       {photoOpen && <LifePhotoForm onClose={closeComposer} onSaved={handlePhotoSaved} />}
+      {todoFormOpen && <TodoForm onClose={() => setTodoFormOpen(false)} onSaved={saveTodo} />}
     </div>
   )
 }

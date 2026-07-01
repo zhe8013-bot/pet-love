@@ -1,7 +1,13 @@
 import type { MedicalRecord, Pet } from '../../domain/types'
-import type { CustomTodo } from '../home/TodoForm'
 
 export type TaskStatus = 'done' | 'later'
+
+export interface CustomTodo {
+  id: string
+  title: string
+  description: string
+  dueAt: string
+}
 
 export interface ReminderTask {
   id: string
