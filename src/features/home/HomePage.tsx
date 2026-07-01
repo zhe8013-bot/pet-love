@@ -1,9 +1,11 @@
 import {
   ArrowRight,
   Bell,
+  BowlFood,
   Camera,
   Check,
   ClockCountdown,
+  Drop,
   FirstAidKit,
   Plus,
   Scales,
@@ -13,7 +15,7 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { usePetData } from '../../data/PetDataProvider'
-import type { ConsumptionEntry, MedicalRecord, Memory, WeightEntry } from '../../domain/types'
+import type { CareEvent, ConsumptionEntry, MedicalRecord, Memory, WeightEntry } from '../../domain/types'
 import { PetForm } from './PetForm'
 import { TodoForm, type CustomTodo } from './TodoForm'
 
@@ -28,6 +30,8 @@ interface HomeTask {
 }
 
 const dayInMilliseconds = 86400000
+const localDate = (date = new Date()) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 
 const systemDueTimestamp = (due: string) => {
   const now = new Date()
@@ -64,6 +68,7 @@ export function HomePage() {
   const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([])
   const [consumptions, setConsumptions] = useState<ConsumptionEntry[]>([])
   const [memories, setMemories] = useState<Memory[]>([])
+  const [careEvents, setCareEvents] = useState<CareEvent[]>([])
   const [petFormOpen, setPetFormOpen] = useState(false)
   const [todoFormOpen, setTodoFormOpen] = useState(false)
   const [taskStates, setTaskStates] = useState<Record<string, TaskStatus>>({})
@@ -86,11 +91,13 @@ export function HomePage() {
       repository.listMedicalRecords(currentPetId),
       repository.listConsumptions(currentPetId, month),
       repository.listMemories(currentPetId),
-    ]).then(([nextWeights, nextMedical, nextConsumptions, nextMemories]) => {
+      repository.listCareEvents(currentPetId, localDate()),
+    ]).then(([nextWeights, nextMedical, nextConsumptions, nextMemories, nextCareEvents]) => {
       setWeights(nextWeights)
       setMedicalRecords(nextMedical)
       setConsumptions(nextConsumptions)
       setMemories(nextMemories)
+      setCareEvents(nextCareEvents)
     })
   }, [currentPetId, month, repository])
 
@@ -99,6 +106,11 @@ export function HomePage() {
   const totalCost = consumptions.reduce((sum, item) => sum + item.cost, 0)
   const photoCount = memories.reduce((sum, item) => sum + item.photos.length, 0)
   const latestWeight = weights.at(-1)?.weightKg ?? currentPet?.currentWeight ?? 0
+  const feedingTotal = careEvents.filter((event) => event.kind === 'feeding').reduce((sum, event) => sum + event.amount, 0)
+  const waterTotal = careEvents.filter((event) => event.kind === 'water').reduce((sum, event) => sum + event.amount, 0)
+  const todayPhotoCount = memories
+    .filter((memory) => memory.occurredAt.startsWith(localDate()))
+    .reduce((sum, memory) => sum + memory.photos.length, 0)
   const tasks = useMemo<HomeTask[]>(() => {
     if (!currentPet) return []
     const systemTasks: HomeTask[] = [
@@ -186,7 +198,7 @@ export function HomePage() {
           <h1>今天也一起好好生活</h1>
           <p>照顾好今天，也把共同生活的变化慢慢留下来。</p>
         </div>
-        <button className="home-record-button" onClick={() => navigate('/life?new=consumption')}>
+        <button className="home-record-button" onClick={() => navigate('/daily')}>
           <Plus size={18} />记录一下
         </button>
       </header>
@@ -210,7 +222,7 @@ export function HomePage() {
               <dd>{latestWeight}kg</dd>
             </div>
           </dl>
-          <button className="hero-profile-link" onClick={() => navigate('/pets')}>
+          <button className="hero-profile-link" onClick={() => navigate('/profile')}>
             查看完整档案<ArrowRight size={16} />
           </button>
         </div>
@@ -220,7 +232,7 @@ export function HomePage() {
         <div className="home-section-heading">
           <div>
             <p className="eyebrow">TODAY</p>
-            <h2 id="today-care-title">今日待办</h2>
+            <h2 id="today-care-title">今日关键提醒</h2>
           </div>
           <div className="todo-heading-actions">
             <span>{completedCount}/{tasks.length} 已完成</span>
@@ -260,23 +272,57 @@ export function HomePage() {
         </div>
       </section>
 
+      <div className="home-action-deck">
+        <section className="home-quick-records" aria-labelledby="home-quick-title">
+          <div className="home-section-heading">
+            <div>
+              <p className="eyebrow">QUICK RECORD</p>
+              <h2 id="home-quick-title">快捷记录</h2>
+            </div>
+            <span>常用动作一步直达</span>
+          </div>
+          <div className="home-quick-grid">
+            <Link to="/daily?new=feeding" aria-label="记录喂食"><BowlFood size={22} weight="duotone" /><strong>喂食</strong><small>添加一餐</small></Link>
+            <Link to="/daily?new=water" aria-label="记录饮水"><Drop size={22} weight="duotone" /><strong>饮水</strong><small>补充水量</small></Link>
+            <Link to="/daily?new=weight" aria-label="记录体重"><Scales size={22} weight="duotone" /><strong>体重</strong><small>按需测量</small></Link>
+            <Link to="/daily?new=photo" aria-label="上传生活照片"><Camera size={22} weight="duotone" /><strong>照片</strong><small>留住此刻</small></Link>
+          </div>
+        </section>
+
+        <section className="home-care-progress" aria-labelledby="home-progress-title">
+          <div className="home-section-heading">
+            <div>
+              <p className="eyebrow">TODAY'S RHYTHM</p>
+              <h2 id="home-progress-title">今日照护进度</h2>
+            </div>
+            <Link to="/daily">查看日常<ArrowRight size={15} /></Link>
+          </div>
+          <div className="home-progress-grid">
+            <article><span><BowlFood size={18} />喂食</span><strong>{feedingTotal || '--'}<small>{feedingTotal ? ' g' : ' 待记录'}</small></strong></article>
+            <article><span><Drop size={18} />饮水</span><strong>{waterTotal || '--'}<small>{waterTotal ? ' ml' : ' 待记录'}</small></strong></article>
+            <article><span><Scales size={18} />体重</span><strong>{latestWeight || '--'}<small>{latestWeight ? ' kg' : ' 暂无'}</small></strong></article>
+            <article><span><Camera size={18} />照片</span><strong>{todayPhotoCount}<small> 张</small></strong></article>
+          </div>
+        </section>
+      </div>
+
       <section className="monthly-bento" data-testid="monthly-bento" aria-labelledby="monthly-bento-title">
         <div className="home-section-heading">
           <div>
             <p className="eyebrow">MONTHLY BENTO</p>
             <h2 id="monthly-bento-title">{monthLabel}概览</h2>
           </div>
-          <button onClick={() => navigate('/life')}>查看全部<ArrowRight size={15} /></button>
+          <button onClick={() => navigate('/daily')}>查看全部<ArrowRight size={15} /></button>
         </div>
         <div className="bento-grid">
-          <button className="bento-card bento-weight" onClick={() => navigate('/life?new=weight')}>
+          <button className="bento-card bento-weight" onClick={() => navigate('/daily?new=weight')}>
             <span><Scales size={20} />体重趋势</span>
             <strong>{latestWeight}<small>kg</small></strong>
             <div className="weight-sparkline" aria-label="近月体重变化">
               {weights.slice(-5).map((weight) => <i key={weight.id} style={{ height: Math.max(26, weight.weightKg * 1.8) + '%' }} />)}
             </div>
           </button>
-          <button className="bento-card" onClick={() => navigate('/life')}>
+          <button className="bento-card" onClick={() => navigate('/daily')}>
             <span><ShoppingBagOpen size={18} />本月花费</span>
             <strong>¥{totalCost}</strong>
           </button>

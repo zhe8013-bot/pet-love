@@ -28,14 +28,17 @@ describe('PetPlanet app', () => {
     expect(within(screen.getByTestId('current-pet-hero')).getByRole('heading', { name: '米粒' })).toBeInTheDocument()
   })
 
-  it('organizes the home into care, monthly bento and memory sections', async () => {
+  it('organizes the home into overview, reminders, quick records, care progress and memories', async () => {
     render(<App />)
 
     await screen.findByRole('heading', { name: '今天也一起好好生活' })
     expect(screen.getByTestId('current-pet-hero')).toBeInTheDocument()
-    expect(screen.getByTestId('today-care')).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: '今日关键提醒' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: '快捷记录' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: '今日照护进度' })).toBeInTheDocument()
     expect(screen.getByTestId('monthly-bento')).toBeInTheDocument()
     expect(screen.getByTestId('memory-preview')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '记录喂食' })).toHaveAttribute('href', '/daily?new=feeding')
     expect(screen.getByRole('link', { name: '打开生活回忆' })).toHaveAttribute('href', '/memories')
   })
 
@@ -43,7 +46,7 @@ describe('PetPlanet app', () => {
     const user = userEvent.setup()
     const { unmount } = render(<App />)
 
-    expect(await screen.findByRole('heading', { name: '今日待办' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: '今日关键提醒' })).toBeInTheDocument()
     expect(screen.queryByText('今日照护')).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: '添加待办' }))
 
